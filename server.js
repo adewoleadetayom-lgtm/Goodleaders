@@ -102,6 +102,11 @@ app.get("/admin", async (req, res) => {
         return res.redirect("/login");
     }
 
+    // Only the administrator can access this page
+    if (req.session.user !== "adewoleadetayom@gmail.com") {
+        return res.send("❌ Access Denied. Admins only.");
+    }
+
     await db.read();
 
     res.render("admin", {
