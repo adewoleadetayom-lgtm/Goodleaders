@@ -122,14 +122,16 @@ h2{
 <!-- Header -->
 <header class="header">
     <button class="menu-btn" onclick="toggleMenu()">☰</button>
-    <div style="background:#1e5eff;color:white;padding:25px;border-radius:15px;text-align:center;margin-bottom:20px;">
-    <h1>🎓 GoodLeaders Dashboard</h1>
-    <p>Welcome, <%= user %>!</p>
-    <p>Lead with integrity. Inspire others. Make a difference.</p>
-</div>
+
+    <div style="flex:1;text-align:center;">
+        <h1 style="margin:0;font-size:30px;">🎓 GoodLeaders</h1>
+        <p style="margin:8px 0 0 0;font-size:16px;">
+            Welcome, <%= user %>
+        </p>
+    </div>
 </header>
 
-<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;max-width:350px;margin:30px auto;">
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;max-width:350px;margin:20px auto;">
 
 <div style="background:white;padding:12px;border-radius:12px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.1);">
 <h2>👥 Members</h2>
@@ -155,13 +157,13 @@ h2{
 
 <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-bottom:25px;">
 
-<a href="/profile" style="padding:12px 20px;background:#1e5eff;color:white;text-decoration:none;border-radius:8px;">👤 My Profile</a>
+<a href="/profile" style="display:flex;align-items:center;justify-content:center;height:50px;background:#1e5eff;color:white;text-decoration:none;border-radius:10px;">👤 My Profile</a>
 
-<a href="/library" style="padding:12px 20px;background:#28a745;color:white;text-decoration:none;border-radius:8px;">📚 Library</a>
+<a href="/library" style="display:flex;align-items:center;justify-content:center;height:50px;background:#28a745;color:white;text-decoration:none;border-radius:10px;">📚 Library</a>
 
-<a href="/announcements" style="padding:12px 20px;background:#ff9800;color:white;text-decoration:none;border-radius:8px;">📢 Announcements</a>
+<a href="/announcements" style="display:flex;align-items:center;justify-content:center;height:50px;background:#ff9800;color:white;text-decoration:none;border-radius:10px;">📢 Announcements</a>
 
-<a href="/logout" style="padding:12px 20px;background:#dc3545;color:white;text-decoration:none;border-radius:8px;">🚪 Logout</a>
+<a href="/logout" style="display:flex;align-items:center;justify-content:center;height:50px;background:#dc3545;color:white;text-decoration:none;border-radius:10px;">🚪 Logout</a>
 
 </div>
 <!-- Side Menu -->
