@@ -188,8 +188,46 @@ font-size:28px;
 
 <header class="header">
 
+<div style="display:flex;align-items:center;gap:15px;">
+
+<button onclick="toggleMenu()" style="
+background:none;
+border:none;
+color:white;
+font-size:28px;
+cursor:pointer;
+">
+☰
+</button>
+
 <div class="logo">
 GoodLeaders
+</div>
+<div id="sidebar" style="
+position:fixed;
+left:-260px;
+top:0;
+width:250px;
+height:100%;
+background:#1e3a8a;
+padding-top:70px;
+transition:.3s;
+z-index:999;
+">
+
+<a href="/dashboard" style="display:block;padding:15px 20px;color:white;text-decoration:none;">🏠 Dashboard</a>
+
+<a href="/profile" style="display:block;padding:15px 20px;color:white;text-decoration:none;">👤 Profile</a>
+
+<a href="/library" style="display:block;padding:15px 20px;color:white;text-decoration:none;">📚 Library</a>
+
+<a href="/announcements" style="display:block;padding:15px 20px;color:white;text-decoration:none;">📢 Announcements</a>
+
+<a href="/admin" style="display:block;padding:15px 20px;color:white;text-decoration:none;">⚙️ Admin</a>
+
+<a href="/logout" style="display:block;padding:15px 20px;color:white;text-decoration:none;">🚪 Logout</a>
+
+</div>
 </div>
 
 <div class="menu">
@@ -369,7 +407,17 @@ GoodLeaders
 <p>&copy; 2026 GoodLeaders. All Rights Reserved.</p>
 
 </footer>
+<script>
+function toggleMenu(){
+const menu = document.getElementById("sidebar");
 
+if(menu.style.left==="0px"){
+menu.style.left="-260px";
+}else{
+menu.style.left="0px";
+}
+}
+</script>
 </body>
 
 </html>
