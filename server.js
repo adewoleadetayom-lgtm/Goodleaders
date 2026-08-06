@@ -103,9 +103,13 @@ app.get("/admin", async (req, res) => {
     }
 
     // Only the administrator can access this page
-    if (req.session.user !== "adewoleadetayom@gmail.com") {
-        return res.send("❌ Access Denied. Admins only.");
-    }
+    const currentUser = db.data.users.find(
+    u => u.email === req.session.user
+);
+
+if (!currentUser || currentUser.role !== "admin") {
+    return res.send("❌ Access Denied. Admins only.");
+}
 
     await db.read();
 
@@ -206,10 +210,11 @@ app.post("/register", async (req, res) => {
     }
 
     db.data.users.push({
-        username,
-        email,
-        password
-    });
+    username,
+    email,
+    password,
+    role: email === "adewoleadetayom@gmail.com" ? "admin" : "member"
+});
 
     await db.write();
 
