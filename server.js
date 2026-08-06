@@ -76,6 +76,8 @@ app.get("/dashboard", async (req, res) => {
     posts: db.data.posts,
     announcements: db.data.announcements,
     usersCount: db.data.users.length,
+    postsCount: db.data.posts.length,
+    announcementsCount: db.data.announcements.length,
     libraryCount: db.data.library.length
 });
 });
