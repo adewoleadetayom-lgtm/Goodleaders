@@ -408,7 +408,10 @@ z-index:999;
 
 </footer>
 <script>
-function toggleMenu(){
+function toggleMenu() {
+    const sidebar = document.getElementById("sidebar");
+    sidebar.classList.toggle("show");
+}
 const menu = document.getElementById("sidebar");
 
 if(menu.style.left==="0px"){
