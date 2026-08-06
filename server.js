@@ -424,11 +424,15 @@ app.post("/admin/library", upload.single("file"), async (req, res) => {
         return res.redirect("/login");
     }
 
-    const { title, description, type } = req.body;
+    const { title, description, type, link } = req.body;
 
-const file = req.file
-    ? "/uploads/" + req.file.filename
-    : "";
+let file = "";
+
+if (type === "link") {
+    file = link;
+} else if (req.file) {
+    file = "/uploads/" + req.file.filename;
+}
 
     await db.read();
 
