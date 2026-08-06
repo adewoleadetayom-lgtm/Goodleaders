@@ -180,6 +180,34 @@ font-size:28px;
 
 }
 
+.sidebar{
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 250px;
+    height: 100%;
+    background: #1f2937;
+    transition: 0.3s;
+    padding-top: 70px;
+    z-index: 1000;
+}
+
+.sidebar.show{
+    left: 0;
+}
+
+.sidebar a{
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 15px 20px;
+    font-size: 16px;
+}
+
+.sidebar a:hover{
+    background: #374151;
+}
+
 </style>
 
 </head>
@@ -203,7 +231,7 @@ cursor:pointer;
 <div class="logo">
 GoodLeaders
 </div>
-<div id="sidebar" style="
+<div id="sidebar" class="sidebar">
 position:fixed;
 left:-260px;
 top:0;
