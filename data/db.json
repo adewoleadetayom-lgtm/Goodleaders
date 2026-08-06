@@ -1,16 +1,15 @@
 {
   "users": [
     {
-      {
-  "username": "ADEWOLE MORADEKE",
-  "email": "adewoleadetayom@gmail.com",
-  "password": "1234",
-  "role": "admin",
-  "phone": "09033229734",
-  "country": "Nigeria",
-  "bio": "",
-  "photo": "/uploads/1785948897472-110983.jpg"
-}
+      "username": "ADEWOLE MORADEKE",
+      "email": "adewoleadetayom@gmail.com",
+      "password": "1234",
+      "role": "admin",
+      "phone": "09033229734",
+      "country": "Nigeria",
+      "bio": "",
+      "photo": "/uploads/1785948897472-110983.jpg"
+    }
   ],
   "posts": [
     {
