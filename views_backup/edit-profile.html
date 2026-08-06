@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Profile - GoodLeaders</title>
+</head>
+<body>
+
+<h1>Edit My Profile</h1>
+
+<form action="/profile/update" method="POST">
+
+<label>Full Name:</label><br>
+<input type="text" name="fullname" placeholder="Enter your full name"><br><br>
+
+<label>Email:</label><br>
+<input type="email" name="email" placeholder="Enter your email"><br><br>
+
+<label>Phone Number:</label><br>
+<input type="tel" name="phone" placeholder="Enter your phone number"><br><br>
+
+<label>About Me:</label><br>
+<textarea name="about" rows="4" cols="40" placeholder="Tell us about yourself"></textarea><br><br>
+
+<label>Profile Picture:</label><br>
+<input type="file" name="photo"><br><br>
+
+<button type="submit">Save Profile</button>
+
+</form>
+
+<br>
+
+<a href="/profile">Back to Profile</a>
+
+</body>
+</html>

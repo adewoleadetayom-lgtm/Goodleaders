@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GoodLeaders Admin Panel</title>
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f7fb;
+    padding:20px;
+}
+.container{
+    max-width:700px;
+    margin:auto;
+}
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+input, textarea{
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:6px;
+    cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>Admin Panel</h2>
+
+        <h3>Add Leadership Advice</h3>
+
+        <form action="/admin/post" method="POST">
+
+<input
+    type="text"
+    name="title"
+    placeholder="Title"
+    required
+>
+
+<textarea
+    name="content"
+    rows="6"
+    placeholder="Write leadership advice here..."
+    required
+></textarea>
+
+<button type="submit">Publish</button>
+
+</form>
+    </div>
+</div>
+
+<h2>📢 Publish Announcement</h2>
+
+<form action="/admin/announcement" method="POST">
+
+    <label>Title</label><br>
+    <input
+        type="text"
+        name="title"
+        required
+        style="width:100%;padding:10px;margin-bottom:10px;"
+    >
+
+    <label>Announcement</label><br>
+    <textarea
+        name="content"
+        rows="6"
+        required
+        style="width:100%;padding:10px;"
+    ></textarea>
+
+    <br><br>
+
+    <button type="submit">
+        Publish Announcement
+    </button>
+
+</form>
+
+<h2>📚 Add to Leadership Library</h2>
+
+<form action="/admin/library" method="POST" enctype="multipart/form-data">
+    <label>Title</label><br>
+    <input
+        type="text"
+        name="title"
+        required
+        style="width:100%;padding:10px;margin-bottom:10px;"
+    >
+
+    <label>Description</label><br>
+    <textarea
+        name="description"
+        rows="4"
+        required
+        style="width:100%;padding:10px;margin-bottom:10px;"
+    ></textarea>
+
+    <label>Type</label><br>
+    <select
+        name="type"
+        style="width:100%;padding:10px;margin-bottom:10px;"
+    >
+        <option value="pdf">📄 PDF</option>
+        <option value="image">🖼️ Image</option>
+        <option value="video">🎥 Video</option>
+        <option value="link">🔗 Link</option>
+    </select>
+
+    <label>Select File</label><br>
+<input
+    type="file"
+    name="file"
+    accept=".pdf,image/*,video/*,audio/*"
+    style="margin-bottom:10px;"
+>
+        style="width:100%;padding:10px;margin-bottom:10px;"
+    >
+
+    <button type="submit">
+        Add to Library
+    </button>
+
+</form>
+
+</body>
+</html>
+

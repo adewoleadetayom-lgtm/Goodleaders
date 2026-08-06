@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Leadership Library</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f8fc;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+a{
+    text-decoration:none;
+    color:#2563eb;
+    font-weight:bold;
+}
+</style>
+
+</head>
+<body>
+
+<h1>📚 Leadership Library</h1>
+
+<a href="/dashboard">⬅ Back to Dashboard</a>
+
+<hr>
+
+<% if (library.length === 0) { %>
+
+<p>No books or documents have been uploaded yet.</p>
+
+<% } else { %>
+
+<% library.forEach(item => { %>
+
+<div class="card">
+    <h2><%= item.title %></h2>
+
+    <p><%= item.description %></p>
+
+    <% if (item.type === "image") { %>
+
+<img
+    src="<%= item.file %>"
+    style="max-width:100%;border-radius:10px;"
+>
+
+<% } else if (item.type === "video") { %>
+
+<video controls width="100%">
+    <source src="<%= item.file %>">
+</video>
+
+<% } else if (item.type === "audio") { %>
+
+<audio controls>
+    <source src="<%= item.file %>">
+</audio>
+
+<% } else { %>
+
+<a href="<%= item.file %>" target="_blank">
+    📄 Open PDF / Document
+</a>
+
+<% } %>
+</div>
+
+<% }) %>
+
+<% } %>
+
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoodLeaders Dashboard</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f8fc;
+}
+
+header{
+    background:#0d47a1;
+    color:white;
+    padding:15px;
+    text-align:center;
+}
+
+nav{
+    background:#1565c0;
+    padding:10px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin:10px;
+    font-weight:bold;
+}
+
+.container{
+    padding:20px;
+}
+
+.card{
+    background:white;
+    border-radius:10px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+h2{
+    color:#0d47a1;
+}
+
+.header{
+
+    background:#2563eb;
+    color:white;
+    padding:15px 20px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    box-shadow:0 2px 10px rgba(0,0,0,.2);
+}
+
+.menu-btn{
+    font-size:28px;
+    background:none;
+    border:none;
+    color:white;
+    cursor:pointer;
+}
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:-260px;
+    width:250px;
+    height:100%;
+    background:#1f2937;
+    transition:.3s;
+    padding-top:70px;
+    z-index:1000;
+}
+
+.sidebar.show{
+    left:0;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:15px 20px;
+    font-size:17px;
+}
+
+.sidebar a:hover{
+    background:#374151;
+}
+
+.dark{
+    background:#111827;
+    color:white;
+}
+</style>
+
+<body>
+
+<!-- Header -->
+<header class="header">
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <h1>GoodLeaders Dashboard</h1>
+</header>
+
+<!-- Side Menu -->
+<div id="sidebar" class="sidebar">
+    <a href="/dashboard">🏠 Home</a>
+    <a href="/profile">👤 Profile</a>
+    <a href="/search">🔍 Search</a>
+    <a href="/announcements">📢 Announcements</a>
+    <a href="/leadership">📖 Leadership Advice</a>
+    <a href="/library">📚 Library</a>
+    <a href="#" onclick="toggleDarkMode()">🌙 Dark Mode</a>
+    <a href="/logout">🚪 Logout</a>
+</div>
+
+
+<div class="container">
+
+<div class="card">
+<h2>Leadership Advice</h2>
+<p>No advice has been posted yet.</p>
+</div>
+
+<div class="card">
+<h2>Announcements</h2>
+<p>No announcements yet.</p>
+</div>
+
+<div class="card">
+<h2>Leadership Library</h2>
+<p>Books, PDFs and videos will appear here.</p>
+</div>
+
+<div class="card">
+    <h2>Search</h2>
+
+    <input
+        id="searchInput"
+        type="text"
+        placeholder="Search GoodLeaders..."
+        style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;"
+    >
+</div>
+
+</div>
+
+<script>
+const searchInput = document.getElementById("searchInput");
+
+if (searchInput) {
+    searchInput.addEventListener("keyup", function () {
+        const value = this.value.toLowerCase();
+
+        document.querySelectorAll(".card").forEach(card => {
+            if (card.querySelector("#searchInput")) return;
+
+            if (card.innerText.toLowerCase().includes(value)) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    });
+}
+
+function toggleMenu() {
+    document.getElementById("sidebar").classList.toggle("show");
+}
+
+document.addEventListener("click", function(event) {
+    const sidebar = document.getElementById("sidebar");
+    const menuBtn = document.querySelector(".menu-btn");
+
+    if (
+        sidebar.classList.contains("show") &&
+        !sidebar.contains(event.target) &&
+        !menuBtn.contains(event.target)
+    ) {
+        sidebar.classList.remove("show");
+    }
+});
+
+function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+}
+</script>
+
+</body>
+</html>

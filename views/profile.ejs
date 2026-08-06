@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>My Profile</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f8fc;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+img{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    object-fit:cover;
+}
+</style>
+
+</head>
+<body>
+
+<h1>👤 My Profile</h1>
+
+<div class="card">
+
+<% if (user.photo) { %>
+
+<img
+    src="<%= user.photo %>"
+    width="150"
+    height="150"
+    style="border-radius:50%;object-fit:cover;"
+>
+
+<% } else { %>
+
+<p>👤 No profile picture yet.</p>
+
+<% } %>
+
+<h2><%= user.username %></h2>
+
+<p><strong>Email:</strong> <%= user.email %></p>
+
+<p><strong>Phone:</strong> <%= user.phone || "Not added" %></p>
+
+<p><strong>Country:</strong> <%= user.country || "Not added" %></p>
+
+<p><strong>Biography:</strong> <%= user.bio || "No biography yet." %></p>
+
+<br>
+
+<a href="/edit-profile">✏️ Edit Profile</a>
+
+<br><br>
+
+<a href="/dashboard">⬅ Back to Dashboard</a>
+</div>
+
+</body>
+</html>

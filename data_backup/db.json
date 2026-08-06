@@ -1,0 +1,20 @@
+{
+  "users": [
+    {
+      "username": "ADEWOLE MORADEKE",
+      "email": "adewoleadetayom@gmail.com",
+      "password": "1234"
+    }
+  ],
+  "posts": [
+    {
+      "title": "How to Lead with Integrity",
+      "content": "Integrity is one of the most important qualities of a great leader. A leader with integrity is honest, trustworthy, and always does what is right, even when no one is watching.\r\nLeading with integrity means keeping your promises, treating everyone with respect, admitting your mistakes, and making fair decisions. People naturally trust leaders whose words match their actions.\r\nIntegrity also requires courage. There may be times when telling the truth or standing up for what is right is difficult, but true leaders choose honesty over convenience.\r\nAs a leader, remember that your character speaks louder than your words. When you lead with integrity, you inspire confidence, build strong relationships, and encourage others to do the right thing.\r\nLeadership Principle: \"People may forget what you said, but they will always remember your character.\"\r\nA good leader serves others before serving themselves.",
+      "author": "adewoleadetayom@gmail.com",
+      "date": "8/4/2026, 4:39:33 PM"
+    }
+  ],
+  "announcements": [],
+  "library": [],
+  "messages": []
+}

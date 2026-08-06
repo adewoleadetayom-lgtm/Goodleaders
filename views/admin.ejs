@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body{
+            font-family:Arial,sans-serif;
+            background:#f4f6f9;
+            padding:20px;
+        }
+        h1{
+            color:#0d47a1;
+        }
+        .card{
+            background:white;
+            padding:20px;
+            margin:15px 0;
+            border-radius:10px;
+            box-shadow:0 2px 8px rgba(0,0,0,.1);
+        }
+        .number{
+            font-size:32px;
+            font-weight:bold;
+            color:#1565c0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>👑 GoodLeaders Admin Dashboard</h1>
+
+<div class="card">
+    <h3>👥 Registered Users</h3>
+    <div class="number"><%= users %></div>
+</div>
+
+<div class="card">
+    <h3>📖 Leadership Posts</h3>
+    <div class="number"><%= posts %></div>
+</div>
+
+<div class="card">
+    <h3>📢 Announcements</h3>
+    <div class="number"><%= announcements %></div>
+</div>
+
+<div class="card">
+    <h3>📚 Library Items</h3>
+    <div class="number"><%= library %></div>
+</div>
+
+<br>
+
+<a href="/dashboard">⬅ Back to Dashboard</a>
+
+</body>
+</html>

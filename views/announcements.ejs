@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Announcements</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f8fc;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+a{
+    text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📢 Announcements</h1>
+
+<a href="/dashboard">⬅ Back to Dashboard</a>
+
+<hr>
+
+<% if (announcements.length === 0) { %>
+
+<p>No announcements yet.</p>
+
+<% } else { %>
+
+<% announcements.forEach(item => { %>
+
+<div class="card">
+    <h2><%= item.title %></h2>
+
+    <p><%= item.content %></p>
+
+    <small>
+        Posted by <%= item.author %><br>
+        <%= item.date %>
+    </small>
+</div>
+
+<% }) %>
+
+<% } %>
+
+</body>
+</html>

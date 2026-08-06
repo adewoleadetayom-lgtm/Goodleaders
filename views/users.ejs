@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Registered Users</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    padding:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+
+th,td{
+    border:1px solid #ddd;
+    padding:12px;
+    text-align:left;
+}
+
+th{
+    background:#1565c0;
+    color:white;
+}
+
+tr:nth-child(even){
+    background:#f2f2f2;
+}
+</style>
+
+</head>
+<body>
+
+<h1>👥 Registered Users</h1>
+
+<table>
+
+<tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Action</th>
+</tr>
+
+<% users.forEach(user => { %>
+
+<tr>
+    <td><%= user.username %></td>
+    <td><%= user.email %></td>
+
+<td>
+    <form action="/delete-user/<%= user.email %>" method="POST">
+        <button type="submit">🗑 Delete</button>
+    </form>
+</td>
+
+</tr>
+
+<% }) %>
+
+</table>
+
+<br>
+
+<a href="/admin">⬅ Back to Admin Dashboard</a>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+{
+  "users": [
+    {
+      "username": "ADEWOLE MORADEKE",
+      "email": "adewoleadetayom@gmail.com",
+      "password": "1234",
+      "phone": "09033229734",
+      "country": "Nigeria",
+      "bio": "",
+      "photo": "/uploads/1785948897472-110983.jpg"
+    }
+  ],
+  "posts": [
+    {
+      "title": "How to Lead with Integrity",
+      "content": "Integrity is one of the most important qualities of a great leader. A leader with integrity is honest, trustworthy, and always does what is right, even when no one is watching.\r\nLeading with integrity means keeping your promises, treating everyone with respect, admitting your mistakes, and making fair decisions. People naturally trust leaders whose words match their actions.\r\nIntegrity also requires courage. There may be times when telling the truth or standing up for what is right is difficult, but true leaders choose honesty over convenience.\r\nAs a leader, remember that your character speaks louder than your words. When you lead with integrity, you inspire confidence, build strong relationships, and encourage others to do the right thing.\r\nLeadership Principle: \"People may forget what you said, but they will always remember your character.\"\r\nA good leader serves others before serving themselves.",
+      "author": "adewoleadetayom@gmail.com",
+      "date": "8/4/2026, 4:39:33 PM"
+    }
+  ],
+  "announcements": [
+    {
+      "title": "Welcome to GoodLeaders",
+      "content": "Welcome to GoodLeaders! We are excited to have you as part of our leadership community. Stay tuned for leadership articles, announcements, and learning resources.",
+      "author": "adewoleadetayom@gmail.com",
+      "date": "8/4/2026, 5:51:03 PM"
+    }
+  ],
+  "library": [
+    {
+      "title": "Leadership Basics",
+      "description": "This lesson teaches the basic principles of leadership.",
+      "type": "link",
+      "file": "https://www.youtube.com",
+      "author": "adewoleadetayom@gmail.com",
+      "date": "8/5/2026, 4:10:09 PM"
+    },
+    {
+      "title": "My Test Image",
+      "description": "Testing image upload",
+      "type": "image",
+      "file": "/uploads/1785946000053-IMG_20260726_111623_919.jpg",
+      "author": "adewoleadetayom@gmail.com",
+      "date": "8/5/2026, 5:06:40 PM"
+    }
+  ],
+  "messages": []
+}
