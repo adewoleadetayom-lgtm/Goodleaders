@@ -125,9 +125,23 @@ h2{
 
     <div style="flex:1;text-align:center;">
         <h1 style="margin:0;font-size:30px;">🎓 GoodLeaders</h1>
-        <p style="margin:8px 0 0 0;font-size:16px;">
-            Welcome, <%= user %>
-        </p>
+        <h2 style="margin:10px 0 5px 0;">👋 Welcome back!</h2>
+<p style="color:#555;font-size:16px;">
+    Logged in as: <strong><%= user %></strong>
+</p>
+
+<button style="background:white;color:#1e5eff;border:none;padding:10px 15px;border-radius:8px;cursor:pointer;">
+🔔 Notifications
+</button>
+
+<button onclick="document.body.classList.toggle('dark')"
+style="background:#333;color:white;border:none;padding:10px 15px;border-radius:8px;cursor:pointer;">
+🌙 Dark Mode
+</button>
+
+<p style="color:#1e5eff;">
+    Lead with integrity. Inspire others. Make a difference.
+</p>
     </div>
 </header>
 
