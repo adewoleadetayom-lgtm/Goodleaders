@@ -193,7 +193,7 @@ font-size:28px;
 }
 
 .sidebar.show{
-    left: 0;
+    left: 0 !important;
 }
 
 .sidebar a{
@@ -431,10 +431,16 @@ GoodLeaders
 <script>
 function toggleMenu() {
     const sidebar = document.getElementById("sidebar");
-    sidebar.classList.toggle("show");
+
+    if (sidebar.classList.contains("show")) {
+        sidebar.classList.remove("show");
+    } else {
+        sidebar.classList.add("show");
+    }
 }
 </script>
 </body>
 
 </html>
+
 
