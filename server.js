@@ -472,11 +472,95 @@ app.post("/admin/announcement", async (req, res) => {
     res.redirect("/announcements");
 });
 
+app.get("/edit-user/:email", async (req, res) => {
+
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+
+    await db.read();
+
+    const user = db.data.users.find(
+        u => u.email === req.params.email
+    );
+
+    if (!user) {
+        return res.send("User not found");
+    }
+
+    res.render("edit-user", { user });
+
+});
+
+app.post("/edit-user", async (req, res) => {
+
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+
+    const { email, username, phone, country, bio } = req.body;
+
+    await db.read();
+
+    const user = db.data.users.find(u => u.email === email);
+
+    if (!user) {
+        return res.send("User not found.");
+    }
+
+    user.username = username;
+    user.phone = phone;
+    user.country = country;
+    user.bio = bio;
+
+    await db.write();
+
+    res.redirect("/users");
+
+});
+
+app.post("/make-admin/:email", async (req, res) => {
+
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+
+    await db.read();
+
+    const user = db.data.users.find(
+        u => u.email === req.params.email
+    );
+
+    if (user) {
+        user.role = "admin";
+        await db.write();
+    }
+
+    res.redirect("/users");
+
+});
+
+app.get("/chat", async (req, res) => {
+
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+
+    await db.read();
+
+    res.render("chat", {
+        user: req.session.user,
+        users: db.data.users,
+        messages: db.data.messages
+    });
+
+});
 
 // Start the server
 app.listen(PORT, () => {
     console.log(`GoodLeaders server is running at http://localhost:${PORT}`);
 });
+
 
 
 

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit User</title>
+
+<style>
+
+body{
+font-family:Arial,sans-serif;
+background:#f4f6f9;
+padding:30px;
+}
+
+.container{
+max-width:600px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+
+h1{
+text-align:center;
+color:#1565c0;
+margin-bottom:20px;
+}
+
+input,
+textarea{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:6px;
+font-size:16px;
+}
+
+button{
+width:100%;
+padding:14px;
+background:#1565c0;
+color:white;
+border:none;
+border-radius:6px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0d47a1;
+}
+
+.back{
+display:block;
+text-align:center;
+margin-top:20px;
+text-decoration:none;
+color:#1565c0;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>✏ Edit User</h1>
+
+<form action="/edit-user" method="POST">
+
+<input type="hidden" name="email" value="<%= user.email %>">
+
+<label><strong>Name</strong></label>
+
+<input
+type="text"
+name="username"
+value="<%= user.username %>"
+required>
+
+<label><strong>Phone</strong></label>
+
+<input
+type="text"
+name="phone"
+value="<%= user.phone || '' %>">
+
+<label><strong>Country</strong></label>
+
+<input
+type="text"
+name="country"
+value="<%= user.country || '' %>">
+
+<label><strong>Bio</strong></label>
+
+<textarea
+name="bio"
+rows="5"><%= user.bio || '' %></textarea>
+
+<button type="submit">
+💾 Save Changes
+</button>
+
+</form>
+
+<a class="back" href="/users">
+⬅ Back to Registered Users
+</a>
+
+</div>
+
+</body>
+</html>

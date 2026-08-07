@@ -38,24 +38,102 @@ tr:nth-child(even){
 
 <h1>👥 Registered Users</h1>
 
+<br>
+
+<input
+id="search"
+type="text"
+placeholder="🔍 Search users..."
+style="
+width:100%;
+max-width:450px;
+padding:12px;
+font-size:16px;
+border:1px solid #ccc;
+border-radius:8px;
+margin-bottom:20px;
+">
+<p style="
+font-size:18px;
+font-weight:bold;
+margin-bottom:20px;
+">
+Total Registered Users:
+<span style="color:#1565c0;">
+<%= users.length %>
+</span>
+</p>
+
 <table>
 
 <tr>
+    <th>Photo</th>
     <th>Name</th>
     <th>Email</th>
+    <th>Phone</th>
+    <th>Country</th>
+    <th>Role</th>
     <th>Action</th>
 </tr>
 
 <% users.forEach(user => { %>
 
 <tr>
-    <td><%= user.username %></td>
-    <td><%= user.email %></td>
 
 <td>
-    <form action="/delete-user/<%= user.email %>" method="POST">
-        <button type="submit">🗑 Delete</button>
-    </form>
+<% if(user.photo){ %>
+<img src="<%= user.photo %>" style="width:50px;height:50px;border-radius:50%;object-fit:cover;">
+<% } else { %>
+👤
+<% } %>
+</td>
+
+<td><%= user.username %></td>
+
+<td><%= user.role || "member" %></td>
+
+<td><%= user.email %></td>
+
+<td><%= user.phone || "Not added" %></td>
+
+<td><%= user.country || "Not added" %></td>
+
+<td>
+
+<% if((user.role || "member") === "member"){ %>
+
+<form action="/make-admin/<%= user.email %>" method="POST" style="display:inline;">
+
+<button type="submit">
+👑 Make Admin
+</button>
+
+</form>
+
+<% } %>
+
+<a href="/edit-user/<%= user.email %>" style="
+display:inline-block;
+padding:8px 12px;
+background:#2563eb;
+color:white;
+text-decoration:none;
+border-radius:6px;
+margin-right:5px;
+">
+✏️ Edit
+</a>
+
+<form action="/delete-user/<%= user.email %>" method="POST"
+style="display:inline;"
+onsubmit="return confirm('Delete this user?');">
+
+<button type="submit">
+🗑 Delete
+</button>
+
+</form>
+
 </td>
 
 </tr>
@@ -67,6 +145,33 @@ tr:nth-child(even){
 <br>
 
 <a href="/admin">⬅ Back to Admin Dashboard</a>
+
+<script>
+
+const search = document.getElementById("search");
+
+search.addEventListener("keyup", function(){
+
+const value = this.value.toLowerCase();
+
+const rows = document.querySelectorAll("table tr");
+
+rows.forEach(function(row,index){
+
+if(index===0) return;
+
+const text = row.innerText.toLowerCase();
+
+row.style.display =
+text.includes(value)
+? ""
+: "none";
+
+});
+
+});
+
+</script>
 
 </body>
 </html>

@@ -155,6 +155,29 @@ Your browser does not support video.
 ⬇ Download PDF
 </a>
 
+<% } else if(item.type === "audio"){ %>
+
+<audio controls style="width:100%;">
+<source src="<%= item.file %>">
+Your browser does not support audio.
+</audio>
+
+<% } else if(item.type === "doc"){ %>
+
+<a href="<%= item.file %>" target="_blank" class="btn">
+📄 Open Document
+</a>
+
+<a href="<%= item.file %>" download class="btn">
+⬇ Download
+</a>
+
+<% } else if(item.type === "zip"){ %>
+
+<a href="<%= item.file %>" download class="btn">
+📦 Download ZIP
+</a>
+
 <% } else if(item.type === "link"){ %>
 
 <a href="<%= item.file %>" target="_blank" class="btn">

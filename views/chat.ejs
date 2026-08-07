@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoodLeaders Chat</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#eef3f8;
+height:100vh;
+display:flex;
+flex-direction:column;
+}
+
+header{
+background:#1e40af;
+color:white;
+padding:18px;
+font-size:24px;
+font-weight:bold;
+text-align:center;
+}
+
+.chat-container{
+display:flex;
+flex:1;
+overflow:hidden;
+}
+
+.sidebar{
+width:280px;
+background:white;
+border-right:1px solid #ddd;
+overflow-y:auto;
+}
+
+.sidebar h3{
+padding:15px;
+background:#2563eb;
+color:white;
+}
+
+.user{
+padding:15px;
+border-bottom:1px solid #eee;
+cursor:pointer;
+}
+
+.user:hover{
+background:#f3f4f6;
+}
+
+.chat-area{
+flex:1;
+display:flex;
+flex-direction:column;
+}
+
+.messages{
+flex:1;
+padding:20px;
+overflow-y:auto;
+background:#f9fafb;
+}
+
+.message{
+background:white;
+padding:12px;
+border-radius:10px;
+margin-bottom:10px;
+box-shadow:0 2px 5px rgba(0,0,0,.08);
+}
+
+.message strong{
+color:#2563eb;
+}
+
+.input-area{
+display:flex;
+padding:15px;
+background:white;
+border-top:1px solid #ddd;
+}
+
+.input-area input{
+flex:1;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+}
+
+.input-area button{
+margin-left:10px;
+padding:12px 20px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+.input-area button:hover{
+background:#1d4ed8;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+💬 GoodLeaders Chat
+</header>
+
+<div class="chat-container">
+
+<div class="sidebar">
+
+<h3>Members</h3>
+
+<div class="user">👤 Member 1</div>
+<div class="user">👤 Member 2</div>
+<div class="user">👤 Member 3</div>
+
+</div>
+
+<div class="chat-area">
+
+<div class="messages">
+
+<div class="message">
+<strong>System</strong><br>
+Welcome to GoodLeaders Chat.
+</div>
+
+</div>
+
+<form class="input-area">
+
+<input
+type="text"
+placeholder="Type your message...">
+
+<button type="submit">
+Send
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>
