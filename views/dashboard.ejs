@@ -218,18 +218,30 @@ font-size:28px;
 
 <div style="display:flex;align-items:center;gap:15px;">
 
-<button onclick="toggleMenu()" style="
-background:none;
-border:none;
-color:white;
-font-size:28px;
-cursor:pointer;
-">
+<button id="menuBtn">
 ☰
 </button>
 
 <div class="logo">
 GoodLeaders
+</div>
+
+</div>
+
+<div id="sidebar" class="sidebar">
+
+<a href="/dashboard">🏠 Dashboard</a>
+
+<a href="/profile">👤 Profile</a>
+
+<a href="/library">📚 Library</a>
+
+<a href="/announcements">📢 Announcements</a>
+
+<a href="/admin">⚙️ Admin</a>
+
+<a href="/logout">🚪 Logout</a>
+
 </div>
 <div id="sidebar" class="sidebar">
 
@@ -429,15 +441,12 @@ GoodLeaders
 
 </footer>
 <script>
-function toggleMenu() {
-    const sidebar = document.getElementById("sidebar");
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.getElementById("sidebar");
 
-    if (sidebar.classList.contains("show")) {
-        sidebar.classList.remove("show");
-    } else {
-        sidebar.classList.add("show");
-    }
-}
+menuBtn.addEventListener("click", function () {
+    sidebar.classList.toggle("show");
+});
 </script>
 </body>
 
