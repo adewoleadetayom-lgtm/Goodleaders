@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Contact Messages - GoodLeaders</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#222;
+}
+
+header{
+    background:#1e40af;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+.container{
+    max-width:1000px;
+    margin:30px auto;
+    padding:20px;
+}
+
+.message{
+    background:white;
+    padding:25px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
+
+.message h3{
+    color:#1e40af;
+    margin-bottom:10px;
+}
+
+.message p{
+    margin:8px 0;
+    line-height:1.6;
+}
+
+.date{
+    color:#777;
+    font-size:13px;
+}
+
+.btn{
+    display:inline-block;
+    padding:12px 20px;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+}
+
+.empty{
+    background:white;
+    padding:30px;
+    text-align:center;
+    border-radius:12px;
+}
+
+footer{
+    background:#1e40af;
+    color:white;
+    text-align:center;
+    padding:25px;
+    margin-top:40px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>📩 Contact Messages</h1>
+
+<p>GoodLeaders Administrator</p>
+
+</header>
+
+<div class="container">
+
+<% if(!messages || messages.length === 0){ %>
+
+<div class="empty">
+
+<h2>📭 No Messages Yet</h2>
+
+<p>Visitors' contact messages will appear here.</p>
+
+</div>
+
+<% } else { %>
+
+<% messages.slice().reverse().forEach(function(item, displayIndex){ %>
+
+<div class="message">
+
+<h3>👤 <%= item.name %></h3>
+
+<p>
+<strong>Email:</strong>
+<%= item.email %>
+</p>
+
+<p>
+<strong>Message:</strong>
+</p>
+
+<p>
+<%= item.message %>
+</p>
+
+<p class="date">
+📅 <%= item.date %>
+</p>
+
+<form action="/delete-contact-message/<%= messages.length - 1 - displayIndex %>" method="POST"
+onsubmit="return confirm('Delete this message?');">
+
+<button type="submit" style="
+background:#dc2626;
+color:white;
+border:none;
+padding:10px 15px;
+border-radius:8px;
+cursor:pointer;
+">
+
+🗑 Delete Message
+
+</button>
+
+</form>
+
+</div>
+
+<% }) %>
+
+<% } %>
+
+<div style="text-align:center;margin-top:25px;">
+
+<a href="/admin" class="btn">
+⬅ Back to Admin Panel
+</a>
+
+</div>
+
+</div>
+
+<footer>
+
+<p>GoodLeaders Platform</p>
+
+<p>Empowering Tomorrow's Leaders.</p>
+
+<p>&copy; 2026 GoodLeaders. All Rights Reserved.</p>
+
+</footer>
+
+</body>
+</html>
+
+

@@ -556,10 +556,157 @@ app.get("/chat", async (req, res) => {
 
 });
 
+// About page
+app.get("/about", (req, res) => {
+    res.render("about");
+});
+
+// Contact page
+app.get("/contact", (req, res) => {
+    res.render("contact");
+});
+
+// Receive contact messages
+app.post("/contact", async (req, res) => {
+
+    const { name, email, message } = req.body;
+
+    await db.read();
+
+    if (!db.data.contactMessages) {
+        db.data.contactMessages = [];
+    }
+
+    db.data.contactMessages.push({
+        name,
+        email,
+        message,
+        date: new Date().toLocaleString()
+    });
+
+    await db.write();
+
+    res.send(`
+        <h2 style="font-family:Arial;text-align:center;margin-top:50px;">
+        ✅ Your message has been sent successfully!
+        </h2>
+
+        <p style="font-family:Arial;text-align:center;">
+        Thank you for contacting GoodLeaders.
+        </p>
+
+        <p style="text-align:center;">
+        <a href="/contact">Send another message</a>
+        &nbsp; | &nbsp;
+        <a href="/dashboard">Back to Dashboard</a>
+        </p>
+    `);
+});
+
+// Contact messages - Admin only
+app.get("/contact-messages", async (req, res) => {
+
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+
+    await db.read();
+
+    const currentUser = db.data.users.find(
+        user => user.email === req.session.user
+    );
+
+    if (!currentUser || currentUser.role !== "admin") {
+        return res.status(403).send("Access denied. Admins only.");
+    }
+
+    res.render("contact-messages", {
+        messages: db.data.contactMessages || []
+    });
+});
+
+// Delete a contact message - Admin only
+app.post("/delete-contact-message/:index", async (req, res) => {
+
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+
+    await db.read();
+
+    const currentUser = db.data.users.find(
+        user => user.email === req.session.user
+    );
+
+    if (!currentUser || currentUser.role !== "admin") {
+        return res.status(403).send("Access denied. Admins only.");
+    }
+
+    const index = parseInt(req.params.index);
+
+    if (
+        isNaN(index) ||
+        index < 0 ||
+        index >= db.data.contactMessages.length
+    ) {
+        return res.status(404).send("Message not found.");
+    }
+
+    db.data.contactMessages.splice(index, 1);
+
+    await db.write();
+
+    res.redirect("/contact-messages");
+});
+
+// Privacy Policy page
+app.get("/privacy", (req, res) => {
+    res.render("privacy");
+});
+
+// Terms & Conditions page
+app.get("/terms", (req, res) => {
+    res.render("terms");
+});
+
+// Cookie Policy page
+app.get("/cookies", (req, res) => {
+    res.render("cookies");
+});
+
+// Read a full leadership article
+app.get("/article/:index", async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+
+    await db.read();
+
+    const index = parseInt(req.params.index);
+
+    if (
+        isNaN(index) ||
+        index < 0 ||
+        index >= db.data.posts.length
+    ) {
+        return res.status(404).send("Article not found.");
+    }
+
+    const post = db.data.posts[index];
+
+    res.render("article", {
+    post: post,
+    dbPosts: db.data.posts
+});
+});
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`GoodLeaders server is running at http://localhost:${PORT}`);
 });
+
+
+
 
 
 
