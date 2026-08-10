@@ -36,7 +36,6 @@ async function initDB() {
 }
 
 initDB();
-testDatabase();
 
 const app = express();
 
@@ -734,8 +733,14 @@ app.get("/search", async (req, res) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`GoodLeaders server is running at http://localhost:${PORT}`);
+
+    if (process.env.DATABASE_URL) {
+        await testDatabase();
+    } else {
+        console.log("⚠️ DATABASE_URL is not set in this environment.");
+    }
 });
 
 
