@@ -418,7 +418,7 @@ app.post("/edit-user", async (req, res) => {
 // MAKE ADMIN
 // =========================
 
-onapp.post("/make-admin/:email", async (req, res) => {
+app.post("/make-admin/:email", async (req, res) => {
     if (!requireLogin(req, res)) return;
 
     try {
