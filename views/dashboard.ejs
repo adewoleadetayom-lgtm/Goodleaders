@@ -9,7 +9,7 @@
 
 <style>
 
-*{
+{
 margin:0;
 padding:0;
 box-sizing:border-box;
@@ -208,9 +208,13 @@ GoodLeaders
 </div>
 <div class="search" style="text-align:center;margin:25px;">
 
+<form action="/search" method="GET">
+
 <input
 type="text"
+name="q"
 placeholder="Search articles, announcements or library..."
+required
 style="
 width:70%;
 max-width:550px;
@@ -219,6 +223,21 @@ border:1px solid #ddd;
 border-radius:8px;
 font-size:16px;
 ">
+
+<button type="submit" style="
+padding:14px 20px;
+margin-left:5px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+">
+🔎 Search
+</button>
+
+</form>
 
 </div>
 

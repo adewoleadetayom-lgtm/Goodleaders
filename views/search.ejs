@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Search - GoodLeaders</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    margin:0;
+    background:#f4f7fb;
+    color:#222;
+}
+
+header{
+    background:#1e40af;
+    color:white;
+    padding:25px;
+    text-align:center;
+}
+
+.container{
+    max-width:900px;
+    margin:30px auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+h2{
+    color:#1e40af;
+    margin-bottom:15px;
+}
+
+.result{
+    padding:15px 0;
+    border-bottom:1px solid #eee;
+}
+
+.result:last-child{
+    border-bottom:none;
+}
+
+.result h3{
+    margin-bottom:8px;
+}
+
+.result p{
+    line-height:1.6;
+    color:#475569;
+}
+
+.btn{
+    display:inline-block;
+    margin-top:10px;
+    padding:9px 14px;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    border-radius:7px;
+}
+
+.search-box{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.search-box input{
+    width:70%;
+    max-width:550px;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:16px;
+}
+
+.search-box button{
+    padding:14px 20px;
+    margin-left:5px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+footer{
+    background:#1e40af;
+    color:white;
+    text-align:center;
+    padding:25px;
+    margin-top:40px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>🔎 GoodLeaders Search</h1>
+
+<p>Find leadership resources</p>
+
+</header>
+
+<div class="container">
+
+<div class="search-box">
+
+<form action="/search" method="GET">
+
+<input
+type="text"
+name="q"
+value="<%= q %>"
+placeholder="Search articles, announcements or library..."
+required
+>
+
+<button type="submit">
+🔎 Search
+</button>
+
+</form>
+
+</div>
+
+
+<% if(
+    posts.length === 0 &&
+    announcements.length === 0 &&
+    library.length === 0
+){ %>
+
+<div class="card">
+
+<h2>No Results Found</h2>
+
+<p>
+We couldn't find anything matching
+"<strong><%= q %></strong>".
+</p>
+
+</div>
+
+<% } %>
+
+
+<% if(posts.length > 0){ %>
+
+<div class="card">
+
+<h2>📰 Articles</h2>
+
+<% posts.forEach(function(post){ %>
+
+<div class="result">
+
+<h3>
+<%= post.title %>
+</h3>
+
+<p>
+<%= post.content.substring(0,180) %>...
+</p>
+
+<a
+href="/article/<%= dbPosts ? dbPosts.indexOf(post) : 0 %>"
+class="btn"
+>
+📖 Read Article
+</a>
+
+</div>
+
+<% }) %>
+
+</div>
+
+<% } %>
+
+
+<% if(announcements.length > 0){ %>
+
+<div class="card">
+
+<h2>📢 Announcements</h2>
+
+<% announcements.forEach(function(item){ %>
+
+<div class="result">
+
+<h3>
+<%= item.title %>
+</h3>
+
+<p>
+<%= item.content %>
+</p>
+
+</div>
+
+<% }) %>
+
+</div>
+
+<% } %>
+
+
+<% if(library.length > 0){ %>
+
+<div class="card">
+
+<h2>📚 Library</h2>
+
+<% library.forEach(function(item){ %>
+
+<div class="result">
+
+<h3>
+<%= item.title %>
+</h3>
+
+<p>
+<%= item.description %>
+</p>
+
+<% if(item.type === "link" && item.file){ %>
+
+<a
+href="<%= item.file %>"
+target="_blank"
+class="btn"
+>
+🔗 Open Resource
+</a>
+
+<% } %>
+
+</div>
+
+<% }) %>
+
+</div>
+
+<% } %>
+
+
+<div style="text-align:center;">
+
+<a href="/dashboard" class="btn">
+⬅ Back to Dashboard
+</a>
+
+</div>
+
+</div>
+
+<footer>
+
+<p>GoodLeaders Platform</p>
+
+<p>Empowering Tomorrow's Leaders.</p>
+
+<p>&copy; 2026 GoodLeaders. All Rights Reserved.</p>
+
+</footer>
+
+</body>
+
+</html>

@@ -1,6 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
+const { testDatabase } = require("./database");
 
 const multer = require("multer");
 
@@ -35,6 +36,7 @@ async function initDB() {
 }
 
 initDB();
+testDatabase();
 
 const app = express();
 
@@ -696,6 +698,37 @@ app.get("/article/:index", async (req, res) => {
 
     res.render("article", {
     post: post,
+    dbPosts: db.data.posts
+});
+});
+
+// Real Search
+app.get("/search", async (req, res) => {
+
+    const q = (req.query.q || "").trim().toLowerCase();
+
+    await db.read();
+
+    const posts = (db.data.posts || []).filter(item =>
+        (item.title || "").toLowerCase().includes(q) ||
+        (item.content || "").toLowerCase().includes(q)
+    );
+
+    const announcements = (db.data.announcements || []).filter(item =>
+        (item.title || "").toLowerCase().includes(q) ||
+        (item.content || "").toLowerCase().includes(q)
+    );
+
+    const library = (db.data.library || []).filter(item =>
+        (item.title || "").toLowerCase().includes(q) ||
+        (item.description || "").toLowerCase().includes(q)
+    );
+
+    res.render("search", {
+    q,
+    posts,
+    announcements,
+    library,
     dbPosts: db.data.posts
 });
 });
