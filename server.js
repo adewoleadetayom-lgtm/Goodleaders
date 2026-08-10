@@ -962,3 +962,57 @@ app.listen(PORT, async () => {
 
 
 
+
+/* TEMPORARY: Admin-only PostgreSQL duplicate checker */
+app.get("/admin/library-duplicates", async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+
+    try {
+        const userResult = await pool.query(
+            "SELECT role FROM users WHERE email = $1",
+            [req.session.user]
+        );
+
+        if (
+            userResult.rows.length === 0 ||
+            userResult.rows[0].role !== "admin"
+        ) {
+            return res.status(403).send("Access denied. Admins only.");
+        }
+
+        const result = await pool.query(`
+            SELECT
+                id,
+                title,
+                description,
+                type,
+                file,
+                author,
+                date,
+                COUNT(*) OVER (
+                    PARTITION BY title, file
+                ) AS duplicate_count
+            FROM library
+            ORDER BY title, id
+        `);
+
+        const duplicates = result.rows.filter(
+            item => Number(item.duplicate_count) > 1
+        );
+
+        res.json({
+            totalLibraryRecords: result.rows.length,
+            duplicateRecords: duplicates.length,
+            duplicates
+        });
+
+    } catch (error) {
+        console.error("Duplicate checker error:", error);
+        res.status(500).json({
+            error: "Could not check library duplicates",
+            details: error.message
+        });
+    }
+});
