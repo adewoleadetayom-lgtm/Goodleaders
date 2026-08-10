@@ -418,7 +418,7 @@ app.post("/edit-user", async (req, res) => {
 // MAKE ADMIN
 // =========================
 
-app.post("/make-admin/:email", async (req, res) => {
+onapp.post("/make-admin/:email", async (req, res) => {
     if (!requireLogin(req, res)) return;
 
     try {
@@ -1016,3 +1016,74 @@ app.get("/admin/library-duplicates", async (req, res) => {
         });
     }
 });
+
+/* TEMPORARY: Admin-only Library duplicate cleanup */
+app.get("/admin/library-cleanup", async (req, res) => {
+    if (!req.session.user) {
+        return res.redirect("/login");
+    }
+
+    if (req.query.confirm !== "DELETE_DUPLICATES") {
+        return res.status(400).send(
+            "Cleanup not executed. Add ?confirm=DELETE_DUPLICATES to the URL."
+        );
+    }
+
+    const client = await pool.connect();
+
+    try {
+        const userResult = await client.query(
+            "SELECT role FROM users WHERE email = $1",
+            [req.session.user]
+        );
+
+        if (
+            userResult.rows.length === 0 ||
+            userResult.rows[0].role !== "admin"
+        ) {
+            return res.status(403).send("Access denied. Admins only.");
+        }
+
+        await client.query("BEGIN");
+
+        const result = await client.query(`
+            DELETE FROM library
+            WHERE id IN (
+                SELECT id
+                FROM (
+                    SELECT
+                        id,
+                        ROW_NUMBER() OVER (
+                            PARTITION BY title, file
+                            ORDER BY id
+                        ) AS row_number
+                    FROM library
+                ) duplicates
+                WHERE row_number > 1
+            )
+            RETURNING id, title, file
+        `);
+
+        await client.query("COMMIT");
+
+        res.json({
+            success: true,
+            deletedRecords: result.rowCount,
+            deleted: result.rows
+        });
+
+    } catch (error) {
+        await client.query("ROLLBACK");
+
+        console.error("Library cleanup error:", error);
+
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+
+    } finally {
+        client.release();
+    }
+});
+
