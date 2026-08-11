@@ -733,6 +733,43 @@ app.get("/chat", async (req, res) => {
 });
 
 // =========================
+// SEND PRIVATE CHAT MESSAGE
+// =========================
+
+app.post("/chat/send", async (req, res) => {
+    if (!requireLogin(req, res)) return;
+
+    try {
+        const { receiver, content } = req.body;
+
+        if (!receiver || !content || !content.trim()) {
+            return res.status(400).send("Receiver and message are required.");
+        }
+
+        await pool.query(
+            `
+            INSERT INTO messages
+            (sender, receiver, content, date, read)
+            VALUES ($1, $2, $3, $4, $5)
+            `,
+            [
+                req.session.user,
+                receiver,
+                content.trim(),
+                new Date().toLocaleString(),
+                false
+            ]
+        );
+
+        res.redirect("/chat");
+
+    } catch (error) {
+        console.error("Send message error:", error);
+        res.status(500).send("Could not send message.");
+    }
+});
+
+// =========================
 // CONTACT PAGE
 // =========================
 

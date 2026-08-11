@@ -126,9 +126,39 @@ background:#1d4ed8;
 
 <h3>Members</h3>
 
-<div class="user">👤 Member 1</div>
-<div class="user">👤 Member 2</div>
-<div class="user">👤 Member 3</div>
+<% users.forEach(member => { %>
+
+    <% if (member.email !== user) { %>
+
+        <div class="user">
+            👤 <%= member.username %>
+
+            <form action="/chat/send" method="POST" style="margin-top:8px;">
+
+                <input
+                    type="hidden"
+                    name="receiver"
+                    value="<%= member.email %>">
+
+                <input
+                    type="text"
+                    name="content"
+                    placeholder="Message <%= member.username %>"
+                    required
+                    style="width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;">
+
+                <button
+                    type="submit"
+                    style="margin-top:6px;padding:8px 12px;background:#2563eb;color:white;border:none;border-radius:6px;">
+                    Send
+                </button>
+
+            </form>
+        </div>
+
+    <% } %>
+
+<% }) %>
 
 </div>
 
@@ -136,24 +166,36 @@ background:#1d4ed8;
 
 <div class="messages">
 
-<div class="message">
-<strong>System</strong><br>
-Welcome to GoodLeaders Chat.
-</div>
+<% messages.forEach(message => { %>
+
+    <% if (
+        message.sender === user ||
+        message.receiver === user
+    ) { %>
+
+        <div class="message">
+
+            <strong>
+                <%= message.sender === user ? "You" : message.sender %>
+            </strong>
+
+            <br>
+
+            <%= message.content %>
+
+            <br>
+
+            <small>
+                <%= message.date %>
+            </small>
+
+        </div>
+
+    <% } %>
+
+<% }) %>
 
 </div>
-
-<form class="input-area">
-
-<input
-type="text"
-placeholder="Type your message...">
-
-<button type="submit">
-Send
-</button>
-
-</form>
 
 </div>
 
