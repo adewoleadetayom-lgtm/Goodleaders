@@ -668,6 +668,43 @@ app.post("/admin/library", upload.single("file"), async (req, res) => {
 });
 
 // =========================
+// DELETE LIBRARY ITEM
+// =========================
+
+app.post("/admin/library/delete/:id", async (req, res) => {
+    if (!requireLogin(req, res)) return;
+
+    try {
+        const admin = await isAdmin(req.session.user);
+
+        if (!admin) {
+            return res.status(403).send("Access denied. Admins only.");
+        }
+
+        const { id } = req.params;
+
+        const result = await pool.query(
+            "DELETE FROM library WHERE id = $1 RETURNING *",
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).send("Library item not found.");
+        }
+
+        console.log(
+            `Library item deleted: ${result.rows[0].title} (ID ${id})`
+        );
+
+        res.redirect("/library");
+
+    } catch (error) {
+        console.error("Library delete error:", error);
+        res.status(500).send("Could not delete library item.");
+    }
+});
+
+// =========================
 // CHAT
 // =========================
 

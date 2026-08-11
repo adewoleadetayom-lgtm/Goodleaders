@@ -188,6 +188,17 @@ Your browser does not support audio.
 
 <p><strong>Uploaded:</strong> <%= item.date %></p>
 
+<form action="/admin/library/delete/<%= item.id %>" method="POST"
+      onsubmit="return confirm('Are you sure you want to delete this library item?');"
+      style="margin-top:12px;">
+
+    <button type="submit"
+            style="background:#dc2626;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;">
+        🗑️ Delete
+    </button>
+
+</form>
+
 </div>
 
 <% }) %>
