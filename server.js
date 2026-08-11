@@ -941,19 +941,7 @@ app.get("/logout", (req, res) => {
 // START SERVER
 // =========================
 
-app.listen(PORT, async () => {
-    console.log(
-        `GoodLeaders server is running at http://localhost:${PORT}`
-    );
 
-    if (process.env.DATABASE_URL) {
-        await testDatabase();
-    } else {
-        console.log(
-            "⚠️ DATABASE_URL is not set in this environment."
-        );
-    }
-});
 
 
 
@@ -1087,3 +1075,20 @@ app.get("/admin/library-cleanup", async (req, res) => {
     }
 });
 
+// =========================
+// START SERVER
+// =========================
+
+app.listen(PORT, async () => {
+    console.log(
+        `GoodLeaders server is running at http://localhost:${PORT}`
+    );
+
+    if (process.env.DATABASE_URL) {
+        await testDatabase();
+    } else {
+        console.log(
+            "⚠️ DATABASE_URL is not set in this environment."
+        );
+    }
+});
