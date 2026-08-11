@@ -3,115 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>GoodLeaders Chat</title>
 
 <style>
+
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
 }
 
 body{
-background:#eef3f8;
-height:100vh;
-display:flex;
-flex-direction:column;
+    background:#eef3f8;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
 }
+
+/* HEADER */
 
 header{
-background:#1e40af;
-color:white;
-padding:18px;
-font-size:24px;
-font-weight:bold;
-text-align:center;
+    background:#1e40af;
+    color:white;
+    padding:16px;
+    font-size:22px;
+    font-weight:bold;
+    text-align:center;
 }
+
+/* MAIN CHAT */
 
 .chat-container{
-display:flex;
-flex:1;
-overflow:hidden;
+    display:flex;
+    flex:1;
+    overflow:hidden;
 }
 
+/* SIDEBAR */
+
 .sidebar{
-width:280px;
-background:white;
-border-right:1px solid #ddd;
-overflow-y:auto;
+    width:280px;
+    background:white;
+    border-right:1px solid #ddd;
+    overflow-y:auto;
 }
 
 .sidebar h3{
-padding:15px;
-background:#2563eb;
-color:white;
+    padding:15px;
+    background:#2563eb;
+    color:white;
+    font-size:18px;
 }
 
 .user{
-padding:15px;
-border-bottom:1px solid #eee;
-cursor:pointer;
+    display:block;
+    padding:15px;
+    border-bottom:1px solid #eee;
+    cursor:pointer;
+    text-decoration:none;
+    color:#222;
+    transition:.2s;
 }
 
 .user:hover{
-background:#f3f4f6;
+    background:#eff6ff;
 }
+
+/* CHAT AREA */
 
 .chat-area{
-flex:1;
-display:flex;
-flex-direction:column;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
 }
+
+/* CHAT HEADER */
+
+.chat-header{
+    background:white;
+    padding:15px;
+    border-bottom:1px solid #ddd;
+    font-weight:bold;
+    font-size:17px;
+}
+
+/* MESSAGES */
 
 .messages{
-flex:1;
-padding:20px;
-overflow-y:auto;
-background:#f9fafb;
+    flex:1;
+    padding:20px;
+    overflow-y:auto;
+    background:#f8fafc;
+    display:flex;
+    flex-direction:column;
 }
+
+/* MESSAGE ROW */
+
+.message-row{
+    display:flex;
+    margin-bottom:12px;
+}
+
+.message-row.you{
+    justify-content:flex-end;
+}
+
+.message-row.other{
+    justify-content:flex-start;
+}
+
+/* MESSAGE BUBBLE */
 
 .message{
-background:white;
-padding:12px;
-border-radius:10px;
-margin-bottom:10px;
-box-shadow:0 2px 5px rgba(0,0,0,.08);
+    max-width:70%;
+    padding:11px 14px;
+    border-radius:16px;
+    word-wrap:break-word;
 }
 
-.message strong{
-color:#2563eb;
+.message-row.other .message{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-bottom-left-radius:4px;
 }
+
+.message-row.you .message{
+    background:#2563eb;
+    color:white;
+    border-bottom-right-radius:4px;
+}
+
+.message-name{
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:4px;
+}
+
+.message-row.other .message-name{
+    color:#2563eb;
+}
+
+.message-row.you .message-name{
+    color:#dbeafe;
+}
+
+.message-text{
+    font-size:15px;
+    line-height:1.4;
+}
+
+.message-time{
+    font-size:10px;
+    margin-top:5px;
+    opacity:.7;
+}
+
+/* INPUT */
 
 .input-area{
-display:flex;
-padding:15px;
-background:white;
-border-top:1px solid #ddd;
+    display:flex;
+    padding:12px;
+    background:white;
+    border-top:1px solid #ddd;
+    gap:8px;
 }
 
-.input-area input{
-flex:1;
-padding:12px;
-border:1px solid #ccc;
-border-radius:8px;
-font-size:16px;
+.input-area input[type="text"]{
+    flex:1;
+    min-width:0;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:22px;
+    font-size:15px;
+    outline:none;
+}
+
+.input-area input[type="text"]:focus{
+    border-color:#2563eb;
 }
 
 .input-area button{
-margin-left:10px;
-padding:12px 20px;
-background:#2563eb;
-color:white;
-border:none;
-border-radius:8px;
-cursor:pointer;
+    padding:12px 20px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:22px;
+    cursor:pointer;
+    font-weight:bold;
 }
 
 .input-area button:hover{
-background:#1d4ed8;
+    background:#1d4ed8;
 }
+
+/* EMPTY CHAT */
+
+.empty-chat{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:#64748b;
+    padding:30px;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+    .sidebar{
+        width:105px;
+    }
+
+    .sidebar h3{
+        font-size:13px;
+        padding:12px 6px;
+        text-align:center;
+    }
+
+    .user{
+        padding:12px 5px;
+        text-align:center;
+        font-size:12px;
+        overflow:hidden;
+    }
+
+    .message{
+        max-width:85%;
+    }
+
+    .chat-header{
+        font-size:14px;
+        padding:12px;
+    }
+
+    .messages{
+        padding:12px;
+    }
+
+    .input-area{
+        padding:9px;
+    }
+
+    .input-area button{
+        padding:10px 14px;
+    }
+
+}
+
 </style>
+
 </head>
 
 <body>
@@ -122,6 +268,8 @@ background:#1d4ed8;
 
 <div class="chat-container">
 
+<!-- MEMBERS -->
+
 <div class="sidebar">
 
 <h3>Members</h3>
@@ -131,63 +279,94 @@ background:#1d4ed8;
     <% if (member.email !== user) { %>
 
         <a
-    href="/chat?user=<%= encodeURIComponent(member.email) %>"
-    class="user"
-    style="display:block;text-decoration:none;color:inherit;"
->
-    👤 <%= member.username %>
-</a>
+            href="/chat?user=<%= encodeURIComponent(member.email) %>"
+            class="user"
+        >
+            👤 <%= member.username %>
+        </a>
 
     <% } %>
 
 <% }) %>
 
 </div>
+
+
+<!-- CHAT AREA -->
 
 <div class="chat-area">
 
-<div style="background:white;padding:15px;border-bottom:1px solid #ddd;font-weight:bold;">
+<!-- CHAT HEADER -->
+
+<div class="chat-header">
+
     <% if (selectedUser) { %>
+
         💬 Chat with <%= selectedUser %>
+
     <% } else { %>
+
         💬 Select a member to start chatting
+
     <% } %>
+
 </div>
 
-<div class="messages">
+
+<!-- MESSAGES -->
+
+<% if (selectedUser) { %>
+
+<div class="messages" id="messages">
+
+<% if (messages.length === 0) { %>
+
+    <div class="empty-chat">
+        <div>
+            <h3>💬 No messages yet</h3>
+            <p>Send the first message!</p>
+        </div>
+    </div>
+
+<% } %>
+
 
 <% messages.forEach(message => { %>
 
-    <% if (
-        message.sender === user ||
-        message.receiver === user
-    ) { %>
+    <% const isYou = message.sender === user; %>
+
+    <div class="message-row <%= isYou ? 'you' : 'other' %>">
 
         <div class="message">
 
-            <strong>
-                <%= message.sender === user ? "You" : message.sender %>
-            </strong>
+            <div class="message-name">
 
-            <br>
+                <%= isYou ? "You" : message.sender %>
 
-            <%= message.content %>
+            </div>
 
-            <br>
+            <div class="message-text">
 
-            <small>
+                <%= message.content %>
+
+            </div>
+
+            <div class="message-time">
+
                 <%= message.date %>
-            </small>
+
+            </div>
 
         </div>
 
-    <% } %>
+    </div>
 
 <% }) %>
 
 </div>
 
-<% if (selectedUser) { %>
+
+<!-- SEND MESSAGE -->
 
 <form
     action="/chat/send"
@@ -205,6 +384,7 @@ background:#1d4ed8;
         type="text"
         name="content"
         placeholder="Type your message..."
+        autocomplete="off"
         required
     >
 
@@ -214,11 +394,43 @@ background:#1d4ed8;
 
 </form>
 
+
+<% } else { %>
+
+<div class="empty-chat">
+
+    <div>
+
+        <h2>💬 GoodLeaders Chat</h2>
+
+        <p>
+            Select a member from the left to start a private conversation.
+        </p>
+
+    </div>
+
+</div>
+
 <% } %>
 
 </div>
 
 </div>
+
+
+<!-- AUTO-SCROLL TO LATEST MESSAGE -->
+
+<script>
+
+const messagesBox = document.getElementById("messages");
+
+if(messagesBox){
+
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+
+}
+
+</script>
 
 </body>
 </html>
