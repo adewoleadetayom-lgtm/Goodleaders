@@ -130,31 +130,13 @@ background:#1d4ed8;
 
     <% if (member.email !== user) { %>
 
-        <div class="user">
-            👤 <%= member.username %>
-
-            <form action="/chat/send" method="POST" style="margin-top:8px;">
-
-                <input
-                    type="hidden"
-                    name="receiver"
-                    value="<%= member.email %>">
-
-                <input
-                    type="text"
-                    name="content"
-                    placeholder="Message <%= member.username %>"
-                    required
-                    style="width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;">
-
-                <button
-                    type="submit"
-                    style="margin-top:6px;padding:8px 12px;background:#2563eb;color:white;border:none;border-radius:6px;">
-                    Send
-                </button>
-
-            </form>
-        </div>
+        <a
+    href="/chat?user=<%= encodeURIComponent(member.email) %>"
+    class="user"
+    style="display:block;text-decoration:none;color:inherit;"
+>
+    👤 <%= member.username %>
+</a>
 
     <% } %>
 
@@ -163,6 +145,14 @@ background:#1d4ed8;
 </div>
 
 <div class="chat-area">
+
+<div style="background:white;padding:15px;border-bottom:1px solid #ddd;font-weight:bold;">
+    <% if (selectedUser) { %>
+        💬 Chat with <%= selectedUser %>
+    <% } else { %>
+        💬 Select a member to start chatting
+    <% } %>
+</div>
 
 <div class="messages">
 
@@ -196,6 +186,35 @@ background:#1d4ed8;
 <% }) %>
 
 </div>
+
+<% if (selectedUser) { %>
+
+<form
+    action="/chat/send"
+    method="POST"
+    class="input-area"
+>
+
+    <input
+        type="hidden"
+        name="receiver"
+        value="<%= selectedUser %>"
+    >
+
+    <input
+        type="text"
+        name="content"
+        placeholder="Type your message..."
+        required
+    >
+
+    <button type="submit">
+        Send
+    </button>
+
+</form>
+
+<% } %>
 
 </div>
 

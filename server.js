@@ -716,14 +716,26 @@ app.get("/chat", async (req, res) => {
             "SELECT * FROM users ORDER BY username ASC"
         );
 
+        const selectedUser = req.query.user || "";
+
         const messages = await pool.query(
-            "SELECT * FROM messages ORDER BY id ASC"
+            `
+            SELECT *
+            FROM messages
+            WHERE
+                (sender = $1 AND receiver = $2)
+                OR
+                (sender = $2 AND receiver = $1)
+            ORDER BY id ASC
+            `,
+            [req.session.user, selectedUser]
         );
 
         res.render("chat", {
             user: req.session.user,
             users: users.rows,
-            messages: messages.rows
+            messages: messages.rows,
+            selectedUser
         });
 
     } catch (error) {
