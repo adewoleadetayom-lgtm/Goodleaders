@@ -452,6 +452,18 @@ if(messagesBox){
 
 <script>
 setInterval(() => {
+    const active = document.activeElement;
+
+    if (
+        active &&
+        (
+            active.tagName === "INPUT" ||
+            active.tagName === "TEXTAREA"
+        )
+    ) {
+        return;
+    }
+
     window.location.reload();
 }, 5000);
 </script>
