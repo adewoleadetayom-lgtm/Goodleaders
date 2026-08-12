@@ -712,12 +712,41 @@ app.get("/chat", async (req, res) => {
     if (!requireLogin(req, res)) return;
 
     try {
+    const selectedUser = req.query.user || "";
+
         const users = await pool.query(
-            "SELECT * FROM users ORDER BY username ASC"
-        );
+    `
+    SELECT
+        u.*,
+        COALESCE(unread.unread_count, 0) AS unread_count
+    FROM users u
+    LEFT JOIN (
+        SELECT
+            sender,
+            COUNT(*) AS unread_count
+        FROM messages
+        WHERE receiver = $1
+        AND read = FALSE
+        GROUP BY sender
+    ) unread
+    ON unread.sender = u.email
+    ORDER BY u.username ASC
+    `,
+    [req.session.user]
+);
 
-        const selectedUser = req.query.user || "";
-
+if (selectedUser) {
+    await pool.query(
+        `
+        UPDATE messages
+        SET read = TRUE
+        WHERE sender = $1
+        AND receiver = $2
+        AND read = FALSE
+        `,
+        [selectedUser, req.session.user]
+    );
+}
         const messages = await pool.query(
             `
             SELECT *

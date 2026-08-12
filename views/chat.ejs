@@ -279,11 +279,29 @@ header{
     <% if (member.email !== user) { %>
 
         <a
-            href="/chat?user=<%= encodeURIComponent(member.email) %>"
-            class="user"
+    href="/chat?user=<%= encodeURIComponent(member.email) %>"
+    class="user"
+    style="display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:inherit;"
+>
+    <span>
+        👤 <%= member.username %>
+    </span>
+
+    <% if (Number(member.unread_count) > 0) { %>
+        <span
+            style="
+                background:#ef4444;
+                color:white;
+                border-radius:999px;
+                padding:3px 8px;
+                font-size:12px;
+                font-weight:bold;
+            "
         >
-            👤 <%= member.username %>
-        </a>
+            <%= member.unread_count %>
+        </span>
+    <% } %>
+</a>
 
     <% } %>
 
