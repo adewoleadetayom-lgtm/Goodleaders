@@ -2,7 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const path = require("path");
 const multer = require("multer");
-const { pool, testDatabase } = require("./database");
+const { pool, testDatabase, addOnlineStatusColumn } = require("./database");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -1062,8 +1062,9 @@ app.listen(PORT, async () => {
     );
 
     if (process.env.DATABASE_URL) {
-        await testDatabase();
-    } else {
+    await testDatabase();
+    await addOnlineStatusColumn();
+} else {
         console.log(
             "⚠️ DATABASE_URL is not set in this environment."
         );

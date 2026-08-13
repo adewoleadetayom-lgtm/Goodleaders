@@ -16,7 +16,24 @@ async function testDatabase() {
     }
 }
 
+async function addOnlineStatusColumn() {
+    try {
+        await pool.query(`
+            ALTER TABLE users
+            ADD COLUMN IF NOT EXISTS last_seen TIMESTAMP;
+        `);
+
+        console.log("✅ last_seen column is ready.");
+    } catch (error) {
+        console.error(
+            "❌ Online status migration failed:",
+            error.message
+        );
+    }
+}
+
 module.exports = {
     pool,
-    testDatabase
+    testDatabase,
+    addOnlineStatusColumn
 };
