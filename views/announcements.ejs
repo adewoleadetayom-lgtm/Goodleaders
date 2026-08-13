@@ -50,6 +50,32 @@ a{
         Posted by <%= item.author %><br>
         <%= item.date %>
     </small>
+
+<% if (typeof isAdmin !== "undefined" && isAdmin) { %>
+
+<form
+    action="/admin/delete-announcement/<%= item.id %>"
+    method="POST"
+    onsubmit="return confirm('Are you sure you want to delete this announcement?');"
+    style="margin-top:15px;"
+>
+    <button
+        type="submit"
+        style="
+            background:#dc2626;
+            color:white;
+            border:none;
+            padding:10px 15px;
+            border-radius:7px;
+            cursor:pointer;
+        "
+    >
+        🗑️ Delete Announcement
+    </button>
+</form>
+
+<% } %>
+
 </div>
 
 <% }) %>

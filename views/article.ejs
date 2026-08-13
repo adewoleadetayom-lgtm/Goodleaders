@@ -100,6 +100,31 @@ Published: <%= post.date %>
 <%= post.content %>
 </div>
 
+<% if (typeof isAdmin !== "undefined" && isAdmin) { %>
+
+<form
+    action="/admin/delete-post/<%= post.id %>"
+    method="POST"
+    onsubmit="return confirm('Are you sure you want to permanently delete this article?');"
+    style="margin-top:20px;"
+>
+    <button
+        type="submit"
+        style="
+            background:#dc2626;
+            color:white;
+            border:none;
+            padding:10px 15px;
+            border-radius:7px;
+            cursor:pointer;
+        "
+    >
+        🗑️ Delete Article
+    </button>
+</form>
+
+<% } %>
+
 <hr style="
 margin:30px 0;
 border:none;

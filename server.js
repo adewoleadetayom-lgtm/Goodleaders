@@ -551,6 +551,33 @@ app.post("/admin/post", async (req, res) => {
 });
 
 // =========================
+// DELETE LEADERSHIP ADVICE / ARTICLE
+// =========================
+
+app.post("/admin/delete-post/:id", async (req, res) => {
+    if (!requireLogin(req, res)) return;
+
+    try {
+        const admin = await isAdmin(req.session.user);
+
+        if (!admin) {
+            return res.status(403).send("Access denied. Admins only.");
+        }
+
+        await pool.query(
+            "DELETE FROM posts WHERE id = $1",
+            [req.params.id]
+        );
+
+        res.redirect("/dashboard");
+
+    } catch (error) {
+        console.error("Delete post error:", error);
+        res.status(500).send("Could not delete article.");
+    }
+});
+
+// =========================
 // ANNOUNCEMENTS PAGE
 // =========================
 
@@ -562,9 +589,12 @@ app.get("/announcements", async (req, res) => {
             "SELECT * FROM announcements ORDER BY id DESC"
         );
 
-        res.render("announcements", {
-            announcements: result.rows
-        });
+        const admin = await isAdmin(req.session.user);
+
+res.render("announcements", {
+    announcements: result.rows,
+    isAdmin: admin
+});
 
     } catch (error) {
         console.error("Announcements error:", error);
@@ -609,6 +639,33 @@ app.post("/admin/announcement", async (req, res) => {
     } catch (error) {
         console.error("Announcement error:", error);
         res.status(500).send("Could not publish announcement.");
+    }
+});
+
+// =========================
+// DELETE ANNOUNCEMENT
+// =========================
+
+app.post("/admin/delete-announcement/:id", async (req, res) => {
+    if (!requireLogin(req, res)) return;
+
+    try {
+        const admin = await isAdmin(req.session.user);
+
+        if (!admin) {
+            return res.status(403).send("Access denied. Admins only.");
+        }
+
+        await pool.query(
+            "DELETE FROM announcements WHERE id = $1",
+            [req.params.id]
+        );
+
+        res.redirect("/announcements");
+
+    } catch (error) {
+        console.error("Delete announcement error:", error);
+        res.status(500).send("Could not delete announcement.");
     }
 });
 
@@ -974,10 +1031,13 @@ app.get("/article/:id", async (req, res) => {
             "SELECT * FROM posts ORDER BY id DESC"
         );
 
-        res.render("article", {
-            post: postResult.rows[0],
-            dbPosts: postsResult.rows
-        });
+        const admin = await isAdmin(req.session.user);
+
+res.render("article", {
+    post: postResult.rows[0],
+    dbPosts: postsResult.rows,
+    isAdmin: admin
+});
 
     } catch (error) {
         console.error("Article error:", error);
