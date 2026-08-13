@@ -41,6 +41,28 @@ app.use(session({
 app.use(express.static(path.join(__dirname, "public")));
 
 // =========================
+// ONLINE STATUS
+// =========================
+
+app.use(async (req, res, next) => {
+    if (req.session.user && process.env.DATABASE_URL) {
+        try {
+            await pool.query(
+                "UPDATE users SET last_seen = NOW() WHERE email = $1",
+                [req.session.user]
+            );
+        } catch (error) {
+            console.error(
+                "Online status update failed:",
+                error.message
+            );
+        }
+    }
+
+    next();
+});
+
+// =========================
 // HELPERS
 // =========================
 
@@ -717,9 +739,15 @@ app.get("/chat", async (req, res) => {
         const users = await pool.query(
     `
     SELECT
-        u.*,
-        COALESCE(unread.unread_count, 0) AS unread_count
-    FROM users u
+    u.*,
+    COALESCE(unread.unread_count, 0) AS unread_count,
+    CASE
+        WHEN u.last_seen IS NOT NULL
+        AND u.last_seen > NOW() - INTERVAL '2 minutes'
+        THEN TRUE
+        ELSE FALSE
+    END AS is_online
+FROM users u
     LEFT JOIN (
         SELECT
             sender,

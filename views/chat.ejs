@@ -283,9 +283,14 @@ header{
     class="user"
     style="display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:inherit;"
 >
+   <span style="display:flex;align-items:center;gap:6px;">
+    <span>
+        <%= member.is_online ? "🟢" : "⚪" %>
+    </span>
     <span>
         👤 <%= member.username %>
     </span>
+</span>
 
     <% if (Number(member.unread_count) > 0) { %>
         <span
