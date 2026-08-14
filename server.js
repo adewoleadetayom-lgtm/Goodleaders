@@ -1016,46 +1016,28 @@ app.post("/delete-contact-message/:id", async (req, res) => {
 });
 
 // =========================
-// ARTICLE
+// ARTICLES
 // =========================
 
-app.get("/article/:id", async (req, res) => {
+app.get("/articles", async (req, res) => {
     if (!requireLogin(req, res)) return;
 
     try {
-        const postResult = await pool.query(
-            "SELECT * FROM posts WHERE id = $1",
-            [req.params.id]
-        );
-
-        if (postResult.rows.length === 0) {
-            return res.status(404).send(`
-                <h1>Article not found</h1>
-                <p>The article you are looking for does not exist.</p>
-                <a href="/articles">← Back to Articles</a>
-            `);
-        }
-
         const postsResult = await pool.query(
             "SELECT * FROM posts ORDER BY id DESC"
         );
 
         const admin = await isAdmin(req.session.user);
 
-        res.render("article", {
-            post: postResult.rows[0],
+        res.render("articles", {
+            posts: postsResult.rows,
             dbPosts: postsResult.rows,
             isAdmin: admin
         });
 
     } catch (error) {
-        console.error("Article error:", error);
-
-        res.status(500).send(`
-            <h1>Unable to load article</h1>
-            <p>Please try again later.</p>
-            <a href="/articles">← Back to Articles</a>
-        `);
+        console.error("Articles error:", error);
+        res.status(500).send("Could not load articles.");
     }
 });
 
