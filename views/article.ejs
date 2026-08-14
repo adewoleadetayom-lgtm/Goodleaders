@@ -160,6 +160,24 @@ margin-top:8px;
 <%= item.content.substring(0,120) %>...
 </p>
 
+
+<% if (isAdmin) { %>
+<form method="POST"
+      action="/admin/delete-article/<%= item.id %>"
+      onsubmit="return confirm('Are you sure you want to delete this article?');"
+      style="display:inline-block;margin-top:10px;">
+    <button type="submit"
+            style="padding:8px 12px;
+                   background:#dc2626;
+                   color:white;
+                   border:none;
+                   border-radius:6px;
+                   cursor:pointer;">
+        🗑️ Delete Article
+    </button>
+</form>
+<% } %>
+
 <a href="/article/<%= item.id %>" style="
 display:inline-block;
 margin-top:8px;

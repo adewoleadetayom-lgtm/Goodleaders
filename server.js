@@ -1080,6 +1080,40 @@ app.get("/article/:id", async (req, res) => {
     }
 });
 
+
+// =========================
+// ADMIN DELETE ARTICLE
+// =========================
+
+app.post("/admin/delete-article/:id", async (req, res) => {
+    if (!requireLogin(req, res)) return;
+
+    try {
+        const admin = await isAdmin(req.session.user);
+
+        if (!admin) {
+            return res.status(403).send("Access denied. Admins only.");
+        }
+
+        const articleId = Number.parseInt(req.params.id, 10);
+
+        if (!Number.isInteger(articleId) || articleId < 1) {
+            return res.status(400).send("Invalid article ID.");
+        }
+
+        await pool.query(
+            "DELETE FROM posts WHERE id = $1",
+            [articleId]
+        );
+
+        res.redirect("/articles");
+
+    } catch (error) {
+        console.error("Delete article error:", error);
+        res.status(500).send("Could not delete article.");
+    }
+});
+
 // =========================
 // SEARCH
 // =========================
