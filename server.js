@@ -1029,7 +1029,11 @@ app.get("/article/:id", async (req, res) => {
         );
 
         if (postResult.rows.length === 0) {
-            return res.status(404).send("Article not found.");
+            return res.status(404).send(`
+                <h1>Article not found</h1>
+                <p>The article you are looking for does not exist.</p>
+                <a href="/articles">← Back to Articles</a>
+            `);
         }
 
         const postsResult = await pool.query(
@@ -1038,15 +1042,20 @@ app.get("/article/:id", async (req, res) => {
 
         const admin = await isAdmin(req.session.user);
 
-res.render("article", {
-    post: postResult.rows[0],
-    dbPosts: postsResult.rows,
-    isAdmin: admin
-});
+        res.render("article", {
+            post: postResult.rows[0],
+            dbPosts: postsResult.rows,
+            isAdmin: admin
+        });
 
     } catch (error) {
         console.error("Article error:", error);
-        res.status(500).send("Could not load article.");
+
+        res.status(500).send(`
+            <h1>Unable to load article</h1>
+            <p>Please try again later.</p>
+            <a href="/articles">← Back to Articles</a>
+        `);
     }
 });
 
