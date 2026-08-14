@@ -142,7 +142,22 @@ app.get("/dashboard", async (req, res) => {
             "SELECT COUNT(*)::int AS count FROM library"
         );
 
+
+        let dashboardUsername = req.session.user.username;
+
+        if (!dashboardUsername && req.session.user.email) {
+            const usernameResult = await pool.query(
+                "SELECT username FROM users WHERE email = $1 LIMIT 1",
+                [req.session.user.email]
+            );
+
+            if (usernameResult.rows.length > 0) {
+                dashboardUsername = usernameResult.rows[0].username;
+            }
+        }
+
         res.render("dashboard", {
+            username: dashboardUsername || req.session.user.email,
             user: req.session.user,
             posts: postsResult.rows,
             announcements: announcementsResult.rows,
