@@ -143,21 +143,23 @@ app.get("/dashboard", async (req, res) => {
         );
 
 
-        let dashboardUsername = req.session.user.username;
+        const dashboardEmail =
+            typeof req.session.user === "string"
+                ? req.session.user
+                : req.session.user.email;
 
-        if (!dashboardUsername && req.session.user.email) {
-            const usernameResult = await pool.query(
-                "SELECT username FROM users WHERE email = $1 LIMIT 1",
-                [req.session.user.email]
-            );
+        const usernameResult = await pool.query(
+            "SELECT username FROM users WHERE email = $1 LIMIT 1",
+            [dashboardEmail]
+        );
 
-            if (usernameResult.rows.length > 0) {
-                dashboardUsername = usernameResult.rows[0].username;
-            }
-        }
+        const dashboardUsername =
+            usernameResult.rows.length > 0
+                ? usernameResult.rows[0].username
+                : dashboardEmail;
 
         res.render("dashboard", {
-            username: dashboardUsername || req.session.user.email,
+            username: dashboardUsername,
             user: req.session.user,
             posts: postsResult.rows,
             announcements: announcementsResult.rows,
