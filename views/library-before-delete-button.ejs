@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GoodLeaders Library</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f7fb;
+}
+
+header{
+background:#1e40af;
+color:white;
+padding:20px;
+text-align:center;
+font-size:30px;
+font-weight:bold;
+}
+
+.container{
+max-width:1200px;
+margin:30px auto;
+padding:20px;
+}
+
+.search{
+margin-bottom:25px;
+text-align:center;
+}
+
+.search input{
+width:100%;
+max-width:600px;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:20px;
+}
+
+.card{
+background:white;
+border-radius:12px;
+padding:20px;
+box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.card h3{
+color:#1e40af;
+margin-bottom:10px;
+}
+
+.card p{
+margin-bottom:10px;
+line-height:1.6;
+color:#555;
+}
+
+.btn{
+display:inline-block;
+padding:10px 18px;
+background:#2563eb;
+color:white;
+text-decoration:none;
+border-radius:6px;
+margin-top:10px;
+}
+
+.btn:hover{
+background:#1d4ed8;
+}
+
+img{
+width:100%;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+video{
+width:100%;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+📚 GoodLeaders Library
+
+</header>
+
+<div class="container">
+
+<div class="search">
+
+<input
+type="text"
+id="search"
+placeholder="Search library...">
+
+</div>
+
+<div class="grid">
+
+<% library.forEach(item=>{ %>
+
+<div class="card">
+
+<h3><%= item.title %></h3>
+
+<p><%= item.description %></p>
+<% if(item.type === "image"){ %>
+
+<img src="<%= item.file %>" alt="<%= item.title %>">
+
+<a href="<%= item.file %>" target="_blank" class="btn">
+🖼 View Image
+</a>
+
+<% } else if(item.type === "video"){ %>
+
+<video controls>
+<source src="<%= item.file %>">
+Your browser does not support video.
+</video>
+
+<% } else if(item.type === "pdf"){ %>
+
+<a href="<%= item.file %>" target="_blank" class="btn">
+📄 Open PDF
+</a>
+
+<a href="<%= item.file %>" download class="btn">
+⬇ Download PDF
+</a>
+
+<% } else if(item.type === "audio"){ %>
+
+<audio controls style="width:100%;">
+<source src="<%= item.file %>">
+Your browser does not support audio.
+</audio>
+
+<% } else if(item.type === "doc"){ %>
+
+<a href="<%= item.file %>" target="_blank" class="btn">
+📄 Open Document
+</a>
+
+<a href="<%= item.file %>" download class="btn">
+⬇ Download
+</a>
+
+<% } else if(item.type === "zip"){ %>
+
+<a href="<%= item.file %>" download class="btn">
+📦 Download ZIP
+</a>
+
+<% } else if(item.type === "link"){ %>
+
+<a href="<%= item.file %>" target="_blank" class="btn">
+🔗 Visit Link
+</a>
+
+<% } %>
+
+<p><strong>Uploaded:</strong> <%= item.date %></p>
+
+</div>
+
+<% }) %>
+</div>
+
+<br><br>
+
+<div style="text-align:center;">
+
+<a href="/dashboard" class="btn">
+⬅ Back to Dashboard
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+const search = document.getElementById("search");
+
+search.addEventListener("keyup", function(){
+
+const value = this.value.toLowerCase();
+
+const cards = document.querySelectorAll(".card");
+
+cards.forEach(card=>{
+
+const text = card.innerText.toLowerCase();
+
+if(text.includes(value)){
+card.style.display="block";
+}else{
+card.style.display="none";
+}
+
+});
+
+});
+
+</script>
+
+</body>
+</html>
+
