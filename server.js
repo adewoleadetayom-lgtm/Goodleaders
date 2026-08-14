@@ -1042,6 +1042,45 @@ app.get("/articles", async (req, res) => {
 });
 
 // =========================
+// LEADERSHIP ARTICLE
+// =========================
+
+app.get("/article/:id", async (req, res) => {
+    if (!requireLogin(req, res)) return;
+
+    try {
+        const articleId = Number.parseInt(req.params.id, 10);
+
+        if (!Number.isInteger(articleId) || articleId < 1) {
+            return res.status(400).send("Invalid article ID.");
+        }
+
+        const result = await pool.query(
+            "SELECT * FROM posts WHERE id = $1",
+            [articleId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).send("Article not found.");
+        }
+
+        const post = result.rows[0];
+
+        res.render("article", {
+            post: post,
+            item: post,
+            dbPosts: [post],
+            posts: [post],
+            isAdmin: false
+        });
+
+    } catch (error) {
+        console.error("Article error:", error);
+        res.status(500).send("Could not load article.");
+    }
+});
+
+// =========================
 // SEARCH
 // =========================
 
