@@ -181,44 +181,41 @@ background:#1d4ed8;
 <label>Resource Title</label>
 <input type="text" name="title" required>
 
-<label>Category</label>
-<select name="category">
-<option>Leadership</option>
-<option>Education</option>
-<option>Business</option>
-<option>Motivation</option>
-<option>Technology</option>
-<option>Other</option>
+<label>Description</label>
+<textarea name="description" rows="5"></textarea>
+
+<label>Resource Type</label>
+<select name="type" required>
+    <option value="pdf">PDF</option>
+    <option value="image">Image</option>
+    <option value="video">Video</option>
+    <option value="audio">Audio</option>
+    <option value="doc">Document</option>
+    <option value="zip">ZIP</option>
+    <option value="link">External Link</option>
 </select>
 
-<label>Select File (PDF, Image or Video)</label>
-<input type="file" name="file">
+<label>Select File</label>
+<input
+    type="file"
+    name="file"
+    accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.zip"
+>
 
-<button type="submit">Upload Resource</button>
+<label>External Link (only for External Link type)</label>
+<input
+    type="url"
+    name="link"
+    placeholder="https://example.com"
+>
+
+<button type="submit">
+    📤 Upload Resource
+</button>
 
 </form>
 
 </div>
-
-<label>Description</label>
-<textarea name="description"></textarea>
-
-<label>Resource Type</label>
-<select name="type">
-    <option value="pdf">PDF</option>
-    <option value="image">Image</option>
-    <option value="video">Video</option>
-    <option value="link">Link</option>
-</select>
-
-<label>Select File</label>
-<input type="file" name="file">
-
-<label>External Link (for Link type only)</label>
-<input
-    type="url"
-    name="link"
-    placeholder="https://example.com">
 
 <!-- Quick Actions -->
 
@@ -280,30 +277,30 @@ background:#1d4ed8;
 
 
 
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
 
 
 
