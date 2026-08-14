@@ -17,40 +17,63 @@
 body{
     background:#f4f7fb;
     color:#222;
+    line-height:1.7;
 }
 
 header{
-    background:#1e40af;
+    background:linear-gradient(135deg,#1e40af,#2563eb);
     color:white;
-    padding:20px;
+    padding:35px 20px;
     text-align:center;
 }
 
 header h1{
-    font-size:30px;
+    font-size:34px;
+    margin-bottom:8px;
+}
+
+header p{
+    font-size:18px;
+}
+
+nav{
+    background:white;
+    padding:14px;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+nav a{
+    color:#1e40af;
+    text-decoration:none;
+    margin:0 10px;
+    font-weight:bold;
+}
+
+nav a:hover{
+    text-decoration:underline;
 }
 
 .container{
-    max-width:900px;
-    margin:30px auto;
-    padding:20px;
+    max-width:950px;
+    margin:35px auto;
+    padding:0 20px;
 }
 
 .card{
     background:white;
     padding:30px;
-    margin-bottom:20px;
+    margin-bottom:22px;
     border-radius:15px;
     box-shadow:0 3px 12px rgba(0,0,0,.08);
 }
 
 h2{
     color:#1e40af;
-    margin-bottom:15px;
+    margin-bottom:14px;
 }
 
 p{
-    line-height:1.7;
     margin-bottom:15px;
 }
 
@@ -71,7 +94,7 @@ textarea{
 }
 
 textarea{
-    min-height:140px;
+    min-height:150px;
     resize:vertical;
 }
 
@@ -89,9 +112,16 @@ button:hover{
     background:#1d4ed8;
 }
 
+.info{
+    background:#eff6ff;
+    border-left:5px solid #2563eb;
+    padding:18px;
+    border-radius:8px;
+}
+
 .btn{
     display:inline-block;
-    margin-top:10px;
+    margin:8px;
     padding:12px 20px;
     background:#2563eb;
     color:white;
@@ -99,12 +129,20 @@ button:hover{
     border-radius:8px;
 }
 
+.btn:hover{
+    background:#1d4ed8;
+}
+
 footer{
     background:#1e40af;
     color:white;
     text-align:center;
-    padding:25px;
+    padding:30px 20px;
     margin-top:40px;
+}
+
+footer p{
+    margin:5px;
 }
 </style>
 </head>
@@ -112,51 +150,59 @@ footer{
 <body>
 
 <header>
-
-<h1>📩 Contact GoodLeaders</h1>
-
-<p>We would love to hear from you.</p>
-
+    <h1>📩 Contact GoodLeaders</h1>
+    <p>We would love to hear from you.</p>
 </header>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/library">Library</a>
+    <a href="/announcements">Announcements</a>
+    <a href="/contact">Contact</a>
+</nav>
 
 <div class="container">
 
 <div class="card">
 
-<h2>Get In Touch</h2>
+<h2>💬 Get In Touch</h2>
 
 <p>
-If you have a question, suggestion, feedback or would like to
-contact the GoodLeaders team, you can reach us using the form below.
+Have a question, suggestion, feedback or message for the
+GoodLeaders team? You can contact us using the form below.
 </p>
 
 <form action="/contact" method="POST">
 
-<label>Name</label>
+<label for="name">Name</label>
 
 <input
-type="text"
-name="name"
-placeholder="Enter your name"
-required>
+    type="text"
+    id="name"
+    name="name"
+    placeholder="Enter your name"
+    required>
 
-<label>Email</label>
+<label for="email">Email</label>
 
 <input
-type="email"
-name="email"
-placeholder="Enter your email address"
-required>
+    type="email"
+    id="email"
+    name="email"
+    placeholder="Enter your email address"
+    required>
 
-<label>Message</label>
+<label for="message">Message</label>
 
 <textarea
-name="message"
-placeholder="Write your message here..."
-required></textarea>
+    id="message"
+    name="message"
+    placeholder="Write your message here..."
+    required></textarea>
 
 <button type="submit">
-📨 Send Message
+    📨 Send Message
 </button>
 
 </form>
@@ -165,4 +211,68 @@ required></textarea>
 
 <div class="card">
 
-<h2>📧 Contact
+<h2>📧 Contact Information</h2>
+
+<p>
+For questions about GoodLeaders, our educational resources,
+leadership articles, library materials or website features,
+please use the contact form above.
+</p>
+
+<div class="info">
+
+<strong>💡 Suggestions and Feedback</strong>
+
+<p>
+Your feedback can help us improve GoodLeaders and make the
+platform more useful for visitors and members.
+</p>
+
+<strong>📚 Resource Questions</strong>
+
+<p>
+If you have questions about resources available through the
+GoodLeaders library, you can also contact us using the form.
+</p>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>🤝 What You Can Contact Us About</h2>
+
+<ul style="padding-left:25px;">
+    <li>Questions about GoodLeaders</li>
+    <li>Suggestions for improving the platform</li>
+    <li>Feedback about website features</li>
+    <li>Questions about library resources</li>
+    <li>Leadership and educational content</li>
+    <li>Reporting a problem with the website</li>
+</ul>
+
+</div>
+
+<div style="text-align:center;">
+
+<a href="/" class="btn">🏠 Home</a>
+<a href="/about" class="btn">ℹ️ About Us</a>
+<a href="/library" class="btn">📚 Library</a>
+
+</div>
+
+</div>
+
+<footer>
+
+<p><strong>GoodLeaders Platform</strong></p>
+
+<p>Empowering Tomorrow's Leaders.</p>
+
+<p>&copy; 2026 GoodLeaders. All Rights Reserved.</p>
+
+</footer>
+
+</body>
+</html>
