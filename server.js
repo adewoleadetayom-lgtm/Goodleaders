@@ -1066,12 +1066,24 @@ app.get("/article/:id", async (req, res) => {
 
         const post = result.rows[0];
 
+        const postsResult = await pool.query(
+            "SELECT * FROM posts ORDER BY id DESC"
+        );
+
+        let admin = false;
+
+        try {
+            admin = await isAdmin(req.session.user);
+        } catch (error) {
+            console.error("Admin check error:", error);
+        }
+
         res.render("article", {
             post: post,
             item: post,
-            dbPosts: [post],
-            posts: [post],
-            isAdmin: false
+            dbPosts: postsResult.rows,
+            posts: postsResult.rows,
+            isAdmin: admin
         });
 
     } catch (error) {
