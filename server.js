@@ -226,6 +226,16 @@ app.get("/faith-before-register", (req, res) => {
     );
 });
 
+app.post("/faith-before-register", (req, res) => {
+    res.sendFile(
+        path.join(
+            __dirname,
+            "views",
+            "faith-before-register.html"
+        )
+    );
+});
+
 app.get("/faith-prayer", (req, res) => {
     res.sendFile(
         path.join(
