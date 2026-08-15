@@ -345,6 +345,15 @@ header{
         👥 GoodLeaders Group Chat
 
 
+
+
+<% } else if (selectedUser) { %>
+
+        💬 Chat with <%= selectedUser %>
+
+
+
+
 <% safePrivateFiles.forEach(file => { %>
 
     <% const isYou = file.sender === user; %>
@@ -359,9 +368,7 @@ header{
 
             <div class="message-text">
 
-                📎 <strong>
-                    <%= file.original_name %>
-                </strong>
+                📎 <strong><%= file.original_name %></strong>
 
                 <br>
 
@@ -391,12 +398,6 @@ header{
     </div>
 
 <% }) %>
-
-<% } else if (selectedUser) { %>
-
-        💬 Chat with <%= selectedUser %>
-
-
 
 <form
     action="/chat/private-upload"
