@@ -213,8 +213,37 @@ app.get("/", (req, res) => {
 });
 
 // =========================
+// JESUS / FAITH REGISTRATION FLOW
+// =========================
+
+app.get("/faith-before-register", (req, res) => {
+    res.sendFile(
+        path.join(
+            __dirname,
+            "views",
+            "faith-before-register.html"
+        )
+    );
+});
+
+app.get("/faith-prayer", (req, res) => {
+    res.sendFile(
+        path.join(
+            __dirname,
+            "views",
+            "faith-prayer.html"
+        )
+    );
+});
+
+app.get("/faith-continue", (req, res) => {
+    res.redirect("/register");
+});
+
+// =========================
 // REGISTER PAGE
 // =========================
+
 
 app.get("/register", (req, res) => {
     res.sendFile(path.join(__dirname, "views", "register.html"));

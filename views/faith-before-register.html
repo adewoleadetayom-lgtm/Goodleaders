@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Before You Continue - GoodLeaders</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #fff4f4, #f5f0ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+}
+
+.card {
+    width: 100%;
+    max-width: 650px;
+    background: white;
+    border-radius: 24px;
+    padding: 35px 25px;
+    text-align: center;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+}
+
+h1 {
+    color: #8b0000;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.message {
+    margin: 25px 0;
+    line-height: 1.7;
+    color: #444;
+    font-size: 17px;
+}
+
+.choice {
+    margin-top: 25px;
+    padding: 22px;
+    border-radius: 18px;
+    background: #fafafa;
+    border: 1px solid #eee;
+}
+
+.choice h2 {
+    font-size: 19px;
+    color: #333;
+}
+
+button {
+    border: none;
+    border-radius: 12px;
+    padding: 14px 22px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+    max-width: 330px;
+}
+
+.give {
+    background: #8b0000;
+    color: white;
+}
+
+.love {
+    background: #f4c430;
+    color: #222;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.footer {
+    margin-top: 25px;
+    font-size: 14px;
+    color: #777;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>Before You Continue</h1>
+
+    <div class="subtitle">
+        Jesus loves you 🎉
+    </div>
+
+    <div class="subtitle">
+        He is coming soon.
+    </div>
+
+    <div class="message">
+        <p>
+            Have you given your life to Christ?
+        </p>
+
+        <p>
+            He loves you. That is why He died on the cross
+            to save us and give us hope and new life.
+        </p>
+
+        <p>
+            Take a moment to think about your relationship
+            with Jesus before continuing your registration.
+        </p>
+    </div>
+
+    <div class="choice">
+
+        <h2>
+            If you have not given your life to Jesus
+        </h2>
+
+        <form action="/faith-prayer" method="GET">
+
+            <button type="submit" class="give">
+                Give Your Life to Jesus
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="choice">
+
+        <h2>
+            If you have given your life to Jesus Christ
+        </h2>
+
+        <form action="/faith-continue" method="GET">
+
+            <button type="submit" class="love">
+                I Love Jesus ❤️
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="footer">
+        GoodLeaders ❤️
+    </div>
+
+</div>
+
+</body>
+</html>
