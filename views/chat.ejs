@@ -338,15 +338,94 @@ header{
 
 <div class="chat-header">
 
-    <% if (groupChat) { %>
+    <% const safePrivateFiles = typeof privateFiles !== 'undefined' ? privateFiles : []; %>
+
+<% if (groupChat) { %>
 
         👥 GoodLeaders Group Chat
 
-    <% } else if (selectedUser) { %>
+
+<% safePrivateFiles.forEach(file => { %>
+
+    <% const isYou = file.sender === user; %>
+
+    <div class="message-row <%= isYou ? 'you' : 'other' %>">
+
+        <div class="message">
+
+            <div class="message-name">
+                <%= isYou ? "You" : file.sender %>
+            </div>
+
+            <div class="message-text">
+
+                📎 <strong>
+                    <%= file.original_name %>
+                </strong>
+
+                <br>
+
+                <small>
+                    <%= (Number(file.file_size) / 1024 / 1024).toFixed(2) %> MB
+                </small>
+
+                <br>
+
+                <a
+                    href="/private-uploads/<%= encodeURIComponent(file.stored_name) %>"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style="color:inherit;font-weight:bold;"
+                >
+                    📥 Open / Download
+                </a>
+
+            </div>
+
+            <div class="message-time">
+                <%= file.date %>
+            </div>
+
+        </div>
+
+    </div>
+
+<% }) %>
+
+<% } else if (selectedUser) { %>
 
         💬 Chat with <%= selectedUser %>
 
-    <% } else { %>
+
+
+<form
+    action="/chat/private-upload"
+    method="POST"
+    enctype="multipart/form-data"
+    class="input-area"
+    style="border-top:none;"
+>
+
+    <input
+        type="hidden"
+        name="receiver"
+        value="<%= selectedUser %>"
+    >
+
+    <input
+        type="file"
+        name="privateFile"
+        accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.mp4,.webm,.mov,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+        required
+    >
+
+    <button type="submit">
+        📎 Send File
+    </button>
+
+</form>
+
+<% } else { %>
 
         💬 Select a member or the group chat
 

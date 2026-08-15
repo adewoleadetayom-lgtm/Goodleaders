@@ -112,6 +112,60 @@ const groupUpload = multer({
 });
 
 // =========================
+// PRIVATE CHAT FILE UPLOADS
+// =========================
+
+const privateUpload = multer({
+    dest: "public/private-uploads/",
+    limits: {
+        fileSize: 25 * 1024 * 1024
+    },
+    fileFilter: (req, file, cb) => {
+
+        const allowed = [
+            "application/pdf",
+
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/webp",
+
+            "video/mp4",
+            "video/webm",
+            "video/quicktime",
+
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+
+            "application/vnd.ms-powerpoint",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+
+            "text/plain"
+        ];
+
+        if (allowed.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error("This file type is not allowed."));
+        }
+    }
+});
+
+// =========================
+// PRIVATE UPLOAD FILE ACCESS
+// =========================
+
+app.use(
+    "/private-uploads",
+    express.static(
+        path.join(__dirname, "public", "private-uploads")
+    )
+);
+
+// =========================
 // HELPERS
 // =========================
 
@@ -920,6 +974,39 @@ async function ensureGroupFilesTable() {
 
 ensureGroupFilesTable();
 
+
+// =========================
+// PRIVATE CHAT FILES TABLE
+// =========================
+
+async function ensurePrivateFilesTable() {
+    try {
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS private_files (
+                id SERIAL PRIMARY KEY,
+                sender VARCHAR(255) NOT NULL,
+                receiver VARCHAR(255) NOT NULL,
+                original_name TEXT NOT NULL,
+                stored_name TEXT NOT NULL,
+                mime_type VARCHAR(255) NOT NULL,
+                file_size BIGINT NOT NULL,
+                date VARCHAR(100) NOT NULL
+            )
+        `);
+
+        console.log("✅ Private files table ready.");
+
+    } catch (error) {
+        console.error(
+            "❌ Private files table setup failed:",
+            error.message
+        );
+    }
+}
+
+ensurePrivateFilesTable();
+
+
 // =========================
 // CHAT
 // =========================
@@ -971,6 +1058,7 @@ if (selectedUser) {
     );
 }
         let messages = { rows: [] };
+        let privateFiles = { rows: [] };
         let groupMessages = { rows: [] };
         let groupFiles = { rows: [] };
 
@@ -1005,12 +1093,26 @@ if (selectedUser) {
                 `,
                 [req.session.user, selectedUser]
             );
+
+            privateFiles = await pool.query(
+                `
+                SELECT *
+                FROM private_files
+                WHERE
+                    (sender = $1 AND receiver = $2)
+                    OR
+                    (sender = $2 AND receiver = $1)
+                ORDER BY id ASC
+                `,
+                [req.session.user, selectedUser]
+            );
         }
 
         res.render("chat", {
             user: req.session.user,
             users: users.rows,
             messages: messages.rows,
+            privateFiles: privateFiles.rows,
             groupMessages: groupMessages.rows,
             groupFiles: groupFiles.rows,
             selectedUser,
@@ -1079,6 +1181,79 @@ app.post(
 
             res.status(500).send(
                 "Could not upload the file."
+            );
+        }
+    }
+);
+
+// =========================
+// SEND PRIVATE CHAT FILE
+// =========================
+
+app.post(
+    "/chat/private-upload",
+    privateUpload.single("privateFile"),
+    async (req, res) => {
+
+        if (!requireLogin(req, res)) {
+            return;
+        }
+
+        try {
+
+            const { receiver } = req.body;
+
+            if (!receiver) {
+                return res.status(400).send(
+                    "Receiver is required."
+                );
+            }
+
+            if (!req.file) {
+                return res.status(400).send(
+                    "Please select a file."
+                );
+            }
+
+            await pool.query(
+                `
+                INSERT INTO private_files
+                (
+                    sender,
+                    receiver,
+                    original_name,
+                    stored_name,
+                    mime_type,
+                    file_size,
+                    date
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                `,
+                [
+                    req.session.user,
+                    receiver,
+                    req.file.originalname,
+                    req.file.filename,
+                    req.file.mimetype,
+                    req.file.size,
+                    new Date().toLocaleString()
+                ]
+            );
+
+            res.redirect(
+                "/chat?user=" +
+                encodeURIComponent(receiver)
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Private file upload error:",
+                error
+            );
+
+            res.status(500).send(
+                "Could not upload the private file."
             );
         }
     }
