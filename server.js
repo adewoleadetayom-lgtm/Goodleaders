@@ -67,6 +67,50 @@ app.use(async (req, res, next) => {
     next();
 });
 
+
+// =========================
+// GROUP CHAT FILE UPLOADS
+// =========================
+
+const groupUpload = multer({
+    dest: "public/group-uploads/",
+    limits: {
+        fileSize: 25 * 1024 * 1024
+    },
+    fileFilter: (req, file, cb) => {
+
+        const allowed = [
+            "application/pdf",
+
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/webp",
+
+            "video/mp4",
+            "video/webm",
+            "video/quicktime",
+
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+
+            "application/vnd.ms-powerpoint",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+
+            "text/plain"
+        ];
+
+        if (allowed.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error("This file type is not allowed."));
+        }
+    }
+});
+
 // =========================
 // HELPERS
 // =========================
@@ -93,6 +137,18 @@ function requireLogin(req, res) {
 
     return true;
 }
+
+
+// =========================
+// GROUP UPLOAD FILE ACCESS
+// =========================
+
+app.use(
+    "/group-uploads",
+    express.static(
+        path.join(__dirname, "public", "group-uploads")
+    )
+);
 
 // =========================
 // HOME
@@ -805,6 +861,65 @@ app.post("/admin/library/delete/:id", async (req, res) => {
     }
 });
 
+
+// =========================
+// GROUP CHAT DATABASE SETUP
+// =========================
+
+async function ensureGroupChatTable() {
+    try {
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS group_messages (
+                id SERIAL PRIMARY KEY,
+                sender VARCHAR(255) NOT NULL,
+                content TEXT NOT NULL,
+                date VARCHAR(100) NOT NULL
+            )
+        `);
+
+        console.log("✅ Group chat table ready.");
+    } catch (error) {
+        console.error("❌ Group chat table setup failed:", error.message);
+    }
+}
+
+ensureGroupChatTable();
+
+
+// =========================
+// GROUP CHAT FILE TABLE
+// =========================
+
+async function ensureGroupFilesTable() {
+
+    try {
+
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS group_files (
+                id SERIAL PRIMARY KEY,
+                sender VARCHAR(255) NOT NULL,
+                original_name TEXT NOT NULL,
+                stored_name TEXT NOT NULL,
+                mime_type VARCHAR(255) NOT NULL,
+                file_size BIGINT NOT NULL,
+                date VARCHAR(100) NOT NULL
+            )
+        `);
+
+        console.log("✅ Group files table ready.");
+
+    } catch (error) {
+
+        console.error(
+            "❌ Group files table setup failed:",
+            error.message
+        );
+
+    }
+}
+
+ensureGroupFilesTable();
+
 // =========================
 // CHAT
 // =========================
@@ -814,6 +929,7 @@ app.get("/chat", async (req, res) => {
 
     try {
     const selectedUser = req.query.user || "";
+    const groupChat = req.query.group === "main";
 
         const users = await pool.query(
     `
@@ -854,29 +970,152 @@ if (selectedUser) {
         [selectedUser, req.session.user]
     );
 }
-        const messages = await pool.query(
-            `
-            SELECT *
-            FROM messages
-            WHERE
-                (sender = $1 AND receiver = $2)
-                OR
-                (sender = $2 AND receiver = $1)
-            ORDER BY id ASC
-            `,
-            [req.session.user, selectedUser]
-        );
+        let messages = { rows: [] };
+        let groupMessages = { rows: [] };
+        let groupFiles = { rows: [] };
+
+        if (groupChat) {
+
+            groupMessages = await pool.query(
+                `
+                SELECT *
+                FROM group_messages
+                ORDER BY id ASC
+                `
+            );
+
+            groupFiles = await pool.query(
+                `
+                SELECT *
+                FROM group_files
+                ORDER BY id ASC
+                `
+            );
+
+        } else if (selectedUser) {
+            messages = await pool.query(
+                `
+                SELECT *
+                FROM messages
+                WHERE
+                    (sender = $1 AND receiver = $2)
+                    OR
+                    (sender = $2 AND receiver = $1)
+                ORDER BY id ASC
+                `,
+                [req.session.user, selectedUser]
+            );
+        }
 
         res.render("chat", {
             user: req.session.user,
             users: users.rows,
             messages: messages.rows,
-            selectedUser
+            groupMessages: groupMessages.rows,
+            groupFiles: groupFiles.rows,
+            selectedUser,
+            groupChat
         });
 
     } catch (error) {
         console.error("Chat error:", error);
         res.status(500).send("Could not load chat.");
+    }
+});
+
+
+// =========================
+// SEND GROUP CHAT FILE
+// =========================
+
+app.post(
+    "/chat/group-upload",
+    groupUpload.single("groupFile"),
+    async (req, res) => {
+
+        if (!requireLogin(req, res)) {
+            return;
+        }
+
+        try {
+
+            if (!req.file) {
+                return res.status(400).send(
+                    "Please select a file."
+                );
+            }
+
+            await pool.query(
+                `
+                INSERT INTO group_files
+                (
+                    sender,
+                    original_name,
+                    stored_name,
+                    mime_type,
+                    file_size,
+                    date
+                )
+                VALUES ($1, $2, $3, $4, $5, $6)
+                `,
+                [
+                    req.session.user,
+                    req.file.originalname,
+                    req.file.filename,
+                    req.file.mimetype,
+                    req.file.size,
+                    new Date().toLocaleString()
+                ]
+            );
+
+            res.redirect("/chat?group=main");
+
+        } catch (error) {
+
+            console.error(
+                "Group file upload error:",
+                error
+            );
+
+            res.status(500).send(
+                "Could not upload the file."
+            );
+        }
+    }
+);
+
+// =========================
+// SEND GROUP CHAT MESSAGE
+// =========================
+
+app.post("/chat/group-send", async (req, res) => {
+    if (!requireLogin(req, res)) return;
+
+    try {
+        const { content } = req.body;
+
+        if (!content || !content.trim()) {
+            return res.status(400).send("Message is required.");
+        }
+
+        await pool.query(
+            `
+            INSERT INTO group_messages
+            (sender, content, date)
+            VALUES ($1, $2, $3)
+            `,
+            [
+                req.session.user,
+                content.trim(),
+                new Date().toLocaleString()
+            ]
+        );
+
+        res.redirect("/chat?group=main");
+
+    } catch (error) {
+        console.error("Group chat send error:", error);
+        res.status(500).send("Could not send group message.");
     }
 });
 
