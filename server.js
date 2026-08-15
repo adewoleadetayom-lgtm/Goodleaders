@@ -1099,9 +1099,17 @@ if (selectedUser) {
                 SELECT *
                 FROM private_files
                 WHERE
-                    (sender = $1 AND receiver = $2)
+                    (
+                        LOWER(TRIM(sender)) = LOWER(TRIM($1))
+                        AND
+                        LOWER(TRIM(receiver)) = LOWER(TRIM($2))
+                    )
                     OR
-                    (sender = $2 AND receiver = $1)
+                    (
+                        LOWER(TRIM(sender)) = LOWER(TRIM($2))
+                        AND
+                        LOWER(TRIM(receiver)) = LOWER(TRIM($1))
+                    )
                 ORDER BY id ASC
                 `,
                 [req.session.user, selectedUser]
