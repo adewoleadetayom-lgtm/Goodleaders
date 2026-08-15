@@ -274,6 +274,21 @@ header{
 
 <h3>Members</h3>
 
+<a
+    href="/chat?group=main"
+    class="user"
+    style="
+        display:flex;
+        align-items:center;
+        gap:8px;
+        text-decoration:none;
+        color:inherit;
+        font-weight:bold;
+    "
+>
+    👥 GoodLeaders Group
+</a>
+
 <% users.forEach(member => { %>
 
     <% if (member.email !== user) { %>
@@ -323,13 +338,17 @@ header{
 
 <div class="chat-header">
 
-    <% if (selectedUser) { %>
+    <% if (groupChat) { %>
+
+        👥 GoodLeaders Group Chat
+
+    <% } else if (selectedUser) { %>
 
         💬 Chat with <%= selectedUser %>
 
     <% } else { %>
 
-        💬 Select a member to start chatting
+        💬 Select a member or the group chat
 
     <% } %>
 
@@ -338,7 +357,136 @@ header{
 
 <!-- MESSAGES -->
 
-<% if (selectedUser) { %>
+<% if (groupChat) { %>
+
+<div class="messages" id="messages">
+
+<% if (groupMessages.length === 0 && groupFiles.length === 0) { %>
+
+    <div class="empty-chat">
+        <div>
+            <h3>👥 Welcome to the Group Chat</h3>
+            <p>Send a message or share a file with the group.</p>
+        </div>
+    </div>
+
+<% } %>
+
+<% groupMessages.forEach(message => { %>
+
+    <% const isYou = message.sender === user; %>
+
+    <div class="message-row <%= isYou ? 'you' : 'other' %>">
+
+        <div class="message">
+
+            <div class="message-name">
+                <%= isYou ? "You" : message.sender %>
+            </div>
+
+            <div class="message-text">
+                <%= message.content %>
+            </div>
+
+            <div class="message-time">
+                <%= message.date %>
+            </div>
+
+        </div>
+
+    </div>
+
+<% }) %>
+
+<% groupFiles.forEach(file => { %>
+
+    <% const isYou = file.sender === user; %>
+
+    <div class="message-row <%= isYou ? 'you' : 'other' %>">
+
+        <div class="message">
+
+            <div class="message-name">
+                <%= isYou ? "You" : file.sender %>
+            </div>
+
+            <div class="message-text">
+
+                📎 <strong><%= file.original_name %></strong>
+
+                <br>
+
+                <small>
+                    <%= (Number(file.file_size) / 1024 / 1024).toFixed(2) %> MB
+                </small>
+
+                <br>
+
+                <a
+                    href="/group-uploads/<%= encodeURIComponent(file.stored_name) %>"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style="color:inherit;font-weight:bold;"
+                >
+                    📥 Open / Download
+                </a>
+
+            </div>
+
+            <div class="message-time">
+                <%= file.date %>
+            </div>
+
+        </div>
+
+    </div>
+
+<% }) %>
+
+</div>
+
+<form
+    action="/chat/group-send"
+    method="POST"
+    class="input-area"
+>
+
+    <input
+        type="text"
+        name="content"
+        placeholder="Message the group..."
+        autocomplete="off"
+        required
+    >
+
+    <button type="submit">
+        Send
+    </button>
+
+</form>
+
+<form
+    action="/chat/group-upload"
+    method="POST"
+    enctype="multipart/form-data"
+    class="input-area"
+    style="border-top:none;"
+>
+
+    <input
+        type="file"
+        name="groupFile"
+        accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.mp4,.webm,.mov,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+        required
+    >
+
+    <button type="submit">
+        📎 Send File
+    </button>
+
+</form>
+
+<% } else if (selectedUser) { %>
 
 <div class="messages" id="messages">
 
