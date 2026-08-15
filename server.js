@@ -1209,6 +1209,16 @@ app.post(
 
         try {
 
+            console.log("===== PRIVATE FILE UPLOAD START =====");
+            console.log("Sender:", req.session.user);
+            console.log("Receiver:", req.body.receiver);
+            console.log("Uploaded file:", req.file ? {
+                originalname: req.file.originalname,
+                filename: req.file.filename,
+                mimetype: req.file.mimetype,
+                size: req.file.size
+            } : "NO FILE");
+            
             const { receiver } = req.body;
 
             if (!receiver) {
@@ -1222,6 +1232,8 @@ app.post(
                     "Please select a file."
                 );
             }
+
+            console.log("Saving private file to database...");
 
             await pool.query(
                 `
@@ -1247,6 +1259,8 @@ app.post(
                     new Date().toLocaleString()
                 ]
             );
+
+            console.log("===== PRIVATE FILE UPLOAD SUCCESS =====");
 
             res.redirect(
                 "/chat?user=" +
