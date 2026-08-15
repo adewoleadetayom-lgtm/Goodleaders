@@ -227,6 +227,18 @@ app.get("/faith-before-register", (req, res) => {
 });
 
 app.post("/faith-before-register", (req, res) => {
+    const { username, email, password } = req.body;
+
+    if (!username || !email || !password) {
+        return res.status(400).send("Please complete all registration fields.");
+    }
+
+    req.session.pendingRegistration = {
+        username,
+        email,
+        password
+    };
+
     res.sendFile(
         path.join(
             __dirname,
@@ -246,8 +258,51 @@ app.get("/faith-prayer", (req, res) => {
     );
 });
 
-app.get("/faith-continue", (req, res) => {
-    res.redirect("/register");
+app.get("/faith-continue", async (req, res) => {
+    try {
+        const pending = req.session.pendingRegistration;
+
+        if (!pending) {
+            return res.redirect("/register");
+        }
+
+        const { username, email, password } = pending;
+
+        const existingUser = await getUser(email);
+
+        if (existingUser) {
+            delete req.session.pendingRegistration;
+            return res.send("This email is already registered.");
+        }
+
+        const role =
+            email === "adewoleadetayom@gmail.com"
+                ? "admin"
+                : "member";
+
+        await pool.query(
+            `
+            INSERT INTO users
+            (username, email, password, role)
+            VALUES ($1, $2, $3, $4)
+            `,
+            [
+                username,
+                email,
+                password,
+                role
+            ]
+        );
+
+        req.session.user = email;
+        delete req.session.pendingRegistration;
+
+        res.redirect("/dashboard");
+
+    } catch (error) {
+        console.error("Faith registration error:", error);
+        res.status(500).send("Registration failed.");
+    }
 });
 
 // =========================
