@@ -3,9 +3,42 @@ const session = require("express-session");
 const path = require("path");
 const multer = require("multer");
 const { pool, testDatabase, addOnlineStatusColumn } = require("./database");
+const { Resend } = require("resend");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const resend = process.env.RESEND_API_KEY
+    ? new Resend(process.env.RESEND_API_KEY)
+    : null;
+
+// =========================
+// PASSWORD RESET MIGRATION
+// =========================
+
+async function addPasswordResetColumns() {
+    if (!process.env.DATABASE_URL) {
+        console.log("⚠️ Skipping password reset migration: DATABASE_URL is not set.");
+        return;
+    }
+
+    try {
+        await pool.query(`
+            ALTER TABLE users
+            ADD COLUMN IF NOT EXISTS password_reset_token TEXT,
+            ADD COLUMN IF NOT EXISTS password_reset_expires TIMESTAMP;
+        `);
+
+        console.log("✅ Password reset columns are ready.");
+    } catch (error) {
+        console.error(
+            "❌ Password reset migration failed:",
+            error.message
+        );
+    }
+}
+
+
 
 // =========================
 // FILE UPLOAD
@@ -532,6 +565,387 @@ app.post("/register", async (req, res) => {
 });
 
 // =========================
+// FORGOT PASSWORD
+// =========================
+
+app.get("/forgot-password", (req, res) => {
+    res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forgot Password - GoodLeaders</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0d6efd,#4facfe);
+    padding:20px;
+}
+.container{
+    width:100%;
+    max-width:400px;
+    background:white;
+    padding:35px;
+    border-radius:18px;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+h2{text-align:center;color:#0d6efd;margin-bottom:10px}
+p{color:#666;line-height:1.6}
+input{
+    width:100%;
+    padding:14px;
+    margin:12px 0;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:15px;
+}
+button{
+    width:100%;
+    padding:14px;
+    background:#28a745;
+    color:white;
+    border:0;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+}
+.back{
+    display:block;
+    text-align:center;
+    margin-top:20px;
+    color:#0d6efd;
+    text-decoration:none;
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>Forgot Password?</h2>
+<p>
+Enter the email address associated with your GoodLeaders account.
+If the account exists, you will be able to continue the password
+recovery process.
+</p>
+
+<form action="/forgot-password" method="POST">
+<input
+    type="email"
+    name="email"
+    placeholder="Email Address"
+    required>
+<button type="submit">Continue</button>
+</form>
+
+<a class="back" href="/login">← Back to Login</a>
+</div>
+</body>
+</html>
+    `);
+});
+
+app.post("/forgot-password", async (req, res) => {
+    try {
+        const email = String(req.body.email || "").trim().toLowerCase();
+
+        if (!email) {
+            return res.status(400).send("Please enter your email address.");
+        }
+
+        const user = await getUser(email);
+
+        /*
+         * Do not reveal whether an email is registered.
+         * This prevents account enumeration.
+         */
+        if (!user) {
+            return res.send(`
+                <h2>Password Recovery</h2>
+                <p>
+                If an account exists for that email address,
+                password recovery instructions can be provided.
+                </p>
+                <a href="/login">Back to Login</a>
+            `);
+        }
+
+        const crypto = require("crypto");
+
+        const token = crypto.randomBytes(32).toString("hex");
+
+        const expires = new Date(
+            Date.now() + 30 * 60 * 1000
+        );
+
+        await pool.query(
+            `
+            UPDATE users
+            SET password_reset_token = $1,
+                password_reset_expires = $2
+            WHERE email = $3
+            `,
+            [token, expires, email]
+        );
+
+        if (!resend) {
+            console.error("RESEND_API_KEY is not configured.");
+            return res.status(500).send(
+                "Password recovery is temporarily unavailable."
+            );
+        }
+
+        const resetUrl =
+            `${req.protocol}://${req.get("host")}/reset-password/${token}`;
+
+        const { data, error } = await resend.emails.send({
+            from: "GoodLeaders <onboarding@resend.dev>",
+            to: [email],
+            subject: "Reset your GoodLeaders password",
+            html: `
+<!DOCTYPE html>
+<html>
+<body style="font-family:Arial,sans-serif;background:#f4f7fb;padding:30px;">
+<div style="max-width:600px;margin:auto;background:white;padding:30px;border-radius:15px;">
+
+<h2 style="color:#1565c0;">GoodLeaders Password Reset</h2>
+
+<p>Hello,</p>
+
+<p>
+We received a request to reset your GoodLeaders account password.
+</p>
+
+<p>
+Click the button below to create a new password:
+</p>
+
+<p>
+<a href="${resetUrl}"
+style="display:inline-block;padding:14px 22px;background:#1565c0;color:white;text-decoration:none;border-radius:8px;font-weight:bold;">
+Reset My Password
+</a>
+</p>
+
+<p>
+This link will expire in <strong>30 minutes</strong>.
+</p>
+
+<p>
+If you did not request a password reset, you can safely ignore this email.
+</p>
+
+<p>— GoodLeaders</p>
+
+</div>
+</body>
+</html>
+            `
+        });
+
+        if (error) {
+            console.error("Resend error:", error);
+            return res.status(500).send(
+                "We could not send the password reset email. Please try again later."
+            );
+        }
+
+        console.log("Password reset email sent:", data?.id);
+
+        res.send(`
+            <h2>Password Recovery</h2>
+            <p>
+                If the email address is registered,
+                a password reset link has been sent.
+            </p>
+            <p>Please check your inbox and spam folder.</p>
+            <a href="/login">Back to Login</a>
+        `);
+
+    } catch (error) {
+        console.error("Forgot password error:", error);
+        res.status(500).send("Password recovery is currently unavailable.");
+    }
+});
+
+// =========================
+// RESET PASSWORD
+// =========================
+
+app.get("/reset-password/:token", async (req, res) => {
+    try {
+        const result = await pool.query(
+            `
+            SELECT email
+            FROM users
+            WHERE password_reset_token = $1
+              AND password_reset_expires > NOW()
+            `,
+            [req.params.token]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(400).send(`
+                <h2>Invalid or Expired Link</h2>
+                <p>This password reset link is no longer valid.</p>
+                <a href="/forgot-password">Request another reset</a>
+            `);
+        }
+
+        res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reset Password - GoodLeaders</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0d6efd,#4facfe);
+    padding:20px;
+}
+.container{
+    width:100%;
+    max-width:400px;
+    background:white;
+    padding:35px;
+    border-radius:18px;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+h2{text-align:center;color:#0d6efd}
+input{
+    width:100%;
+    padding:14px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:15px;
+}
+button{
+    width:100%;
+    padding:14px;
+    background:#28a745;
+    color:white;
+    border:0;
+    border-radius:10px;
+    font-size:16px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>🔐 Create New Password</h2>
+
+<form action="/reset-password" method="POST">
+<input type="hidden" name="token" value="${req.params.token}">
+
+<input
+    type="password"
+    name="password"
+    placeholder="New Password"
+    minlength="6"
+    required>
+
+<input
+    type="password"
+    name="confirmPassword"
+    placeholder="Confirm New Password"
+    minlength="6"
+    required>
+
+<button type="submit">Reset Password</button>
+</form>
+</div>
+</body>
+</html>
+        `);
+
+    } catch (error) {
+        console.error("Reset page error:", error);
+        res.status(500).send("Could not load password reset page.");
+    }
+});
+
+app.post("/reset-password", async (req, res) => {
+    try {
+        const {
+            token,
+            password,
+            confirmPassword
+        } = req.body;
+
+        if (!token || !password || !confirmPassword) {
+            return res.status(400).send("Please complete all fields.");
+        }
+
+        if (password !== confirmPassword) {
+            return res.status(400).send("The passwords do not match.");
+        }
+
+        if (password.length < 6) {
+            return res.status(400).send(
+                "Password must be at least 6 characters long."
+            );
+        }
+
+        const bcrypt = require("bcryptjs");
+
+        const result = await pool.query(
+            `
+            SELECT email
+            FROM users
+            WHERE password_reset_token = $1
+              AND password_reset_expires > NOW()
+            `,
+            [token]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(400).send(`
+                <h2>Invalid or Expired Link</h2>
+                <p>This password reset link is no longer valid.</p>
+                <a href="/forgot-password">Request another reset</a>
+            `);
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 12);
+
+        await pool.query(
+            `
+            UPDATE users
+            SET password = $1,
+                password_reset_token = NULL,
+                password_reset_expires = NULL
+            WHERE email = $2
+            `,
+            [hashedPassword, result.rows[0].email]
+        );
+
+        res.send(`
+            <h2>Password Reset Successful ✅</h2>
+            <p>Your password has been changed successfully.</p>
+            <p>You can now log in with your new password.</p>
+            <a href="/login">Go to Login</a>
+        `);
+
+    } catch (error) {
+        console.error("Password reset error:", error);
+        res.status(500).send("Could not reset password.");
+    }
+});
+
+// =========================
 // LOGIN PAGE
 // =========================
 
@@ -551,17 +965,54 @@ app.post("/login", async (req, res) => {
             `
             SELECT *
             FROM users
-            WHERE email = $1
-            AND password = $2
+            WHERE LOWER(email) = LOWER($1)
             `,
-            [email, password]
+            [email]
         );
 
         if (result.rows.length === 0) {
             return res.send("Invalid email or password.");
         }
 
-        req.session.user = result.rows[0].email;
+        const user = result.rows[0];
+        const bcrypt = require("bcryptjs");
+
+        let passwordValid = false;
+
+        // Support existing accounts whose passwords were stored
+        // before bcrypt was introduced.
+        if (
+            typeof user.password === "string" &&
+            user.password.startsWith("$2")
+        ) {
+            passwordValid = await bcrypt.compare(
+                password,
+                user.password
+            );
+        } else {
+            passwordValid = user.password === password;
+
+            // Automatically upgrade an old plain-text password
+            // to a secure bcrypt hash after successful login.
+            if (passwordValid) {
+                const hashedPassword = await bcrypt.hash(password, 12);
+
+                await pool.query(
+                    `
+                    UPDATE users
+                    SET password = $1
+                    WHERE email = $2
+                    `,
+                    [hashedPassword, user.email]
+                );
+            }
+        }
+
+        if (!passwordValid) {
+            return res.send("Invalid email or password.");
+        }
+
+        req.session.user = user.email;
 
         res.redirect("/dashboard");
 
@@ -640,31 +1091,73 @@ app.post("/edit-user", async (req, res) => {
     if (!requireLogin(req, res)) return;
 
     try {
+        const admin = await isAdmin(req.session.user);
+
+        if (!admin) {
+            return res.status(403).send("Access denied. Admins only.");
+        }
+
         const {
             email,
             username,
             phone,
             country,
-            bio
+            bio,
+            newPassword,
+            confirmPassword
         } = req.body;
 
-        await pool.query(
-            `
-            UPDATE users
-            SET username = $1,
-                phone = $2,
-                country = $3,
-                bio = $4
-            WHERE email = $5
-            `,
-            [
-                username,
-                phone || null,
-                country || null,
-                bio || "",
-                email
-            ]
-        );
+        if (!email || !username) {
+            return res.status(400).send("Name and email are required.");
+        }
+
+        if (newPassword || confirmPassword) {
+            if (newPassword !== confirmPassword) {
+                return res.status(400).send("The new passwords do not match.");
+            }
+
+            if (newPassword.length < 6) {
+                return res.status(400).send("New password must be at least 6 characters long.");
+            }
+
+            await pool.query(
+                `
+                UPDATE users
+                SET username = $1,
+                    phone = $2,
+                    country = $3,
+                    bio = $4,
+                    password = $5
+                WHERE email = $6
+                `,
+                [
+                    username,
+                    phone || null,
+                    country || null,
+                    bio || "",
+                    newPassword,
+                    email
+                ]
+            );
+        } else {
+            await pool.query(
+                `
+                UPDATE users
+                SET username = $1,
+                    phone = $2,
+                    country = $3,
+                    bio = $4
+                WHERE email = $5
+                `,
+                [
+                    username,
+                    phone || null,
+                    country || null,
+                    bio || "",
+                    email
+                ]
+            );
+        }
 
         res.redirect("/users");
 
@@ -1786,6 +2279,7 @@ app.listen(PORT, async () => {
     );
 
     if (process.env.DATABASE_URL) {
+    await addPasswordResetColumns();
     await testDatabase();
     await addOnlineStatusColumn();
 } else {
