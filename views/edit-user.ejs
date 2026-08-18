@@ -104,6 +104,33 @@ value="<%= user.country || '' %>">
 name="bio"
 rows="5"><%= user.bio || '' %></textarea>
 
+<hr style="margin:25px 0;border:none;border-top:1px solid #ddd;">
+
+<h2 style="color:#1565c0;margin-bottom:10px;">
+🔐 Set New Password
+</h2>
+
+<p style="color:#666;font-size:14px;margin-bottom:15px;">
+For security, the existing password is never displayed.
+Leave these fields empty if you do not want to change the password.
+</p>
+
+<label><strong>New Password</strong></label>
+
+<input
+type="password"
+name="newPassword"
+autocomplete="new-password"
+placeholder="Enter a new password">
+
+<label><strong>Confirm New Password</strong></label>
+
+<input
+type="password"
+name="confirmPassword"
+autocomplete="new-password"
+placeholder="Confirm the new password">
+
 <button type="submit">
 💾 Save Changes
 </button>
