@@ -885,13 +885,173 @@ If you did not request a password reset, you can safely ignore this email.
         console.log("Password reset email sent:", data?.id);
 
         res.send(`
-            <h2>Password Recovery</h2>
-            <p>
-                If the email address is registered,
-                a password reset link has been sent.
-            </p>
-            <p>Please check your inbox and spam folder.</p>
-            <a href="/login">Back to Login</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Check Your Email - GoodLeaders</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:linear-gradient(135deg,#0d6efd,#4facfe);
+}
+
+.container{
+    width:100%;
+    max-width:430px;
+}
+
+.card{
+    background:#fff;
+    border-radius:24px;
+    padding:42px 32px;
+    text-align:center;
+    box-shadow:0 18px 45px rgba(0,0,0,.22);
+}
+
+.success-icon{
+    width:82px;
+    height:82px;
+    margin:0 auto 20px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e8f8ee;
+    color:#28a745;
+    font-size:42px;
+}
+
+h1{
+    color:#123;
+    font-size:27px;
+    margin-bottom:14px;
+}
+
+.message{
+    color:#667085;
+    line-height:1.7;
+    margin-bottom:24px;
+}
+
+.email-box{
+    background:#f4f8ff;
+    border-radius:14px;
+    padding:16px;
+    margin-bottom:20px;
+    color:#596579;
+    font-size:14px;
+    line-height:1.6;
+}
+
+.email-box strong{
+    color:#1565c0;
+}
+
+.security{
+    background:#fff8e8;
+    border-radius:14px;
+    padding:15px;
+    color:#765b16;
+    font-size:13px;
+    line-height:1.6;
+    margin-bottom:25px;
+}
+
+.login-button{
+    display:block;
+    width:100%;
+    padding:15px;
+    border-radius:12px;
+    background:#0d6efd;
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    font-size:16px;
+}
+
+.login-button:hover{
+    background:#0b5ed7;
+}
+
+.footer{
+    text-align:center;
+    color:rgba(255,255,255,.9);
+    font-size:13px;
+    margin-top:18px;
+}
+
+@media(max-width:480px){
+    .card{
+        padding:34px 22px;
+    }
+
+    h1{
+        font-size:24px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<div class="success-icon">
+✓
+</div>
+
+<h1>Check Your Email</h1>
+
+<p class="message">
+If the email address is registered with GoodLeaders,
+we've sent you a password reset link.
+</p>
+
+<div class="email-box">
+📧 <strong>Password reset email sent</strong>
+<br>
+Please open your email inbox and look for a message
+from <strong>GoodLeaders</strong>.
+</div>
+
+<div class="security">
+🔒 <strong>Didn't see it?</strong>
+<br>
+Please check your Spam, Junk, or Promotions folder.
+The reset link will expire after <strong>30 minutes</strong>.
+</div>
+
+<a class="login-button" href="/login">
+← Back to Login
+</a>
+
+</div>
+
+<div class="footer">
+© GoodLeaders — Leadership, Growth &amp; Purpose
+</div>
+
+</div>
+
+</body>
+</html>
         `);
 
     } catch (error) {
