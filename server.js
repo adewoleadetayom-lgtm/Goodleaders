@@ -575,76 +575,203 @@ app.get("/forgot-password", (req, res) => {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Forgot Password - GoodLeaders</title>
+
 <style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-body{
+*{
+    box-sizing:border-box;
     margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
     min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(135deg,#0d6efd,#4facfe);
     padding:20px;
+    background:
+        linear-gradient(135deg,#0d6efd,#4facfe);
 }
+
 .container{
     width:100%;
-    max-width:400px;
-    background:white;
-    padding:35px;
-    border-radius:18px;
-    box-shadow:0 10px 25px rgba(0,0,0,.25);
+    max-width:430px;
 }
-h2{text-align:center;color:#0d6efd;margin-bottom:10px}
-p{color:#666;line-height:1.6}
+
+.card{
+    background:#ffffff;
+    border-radius:24px;
+    padding:38px 32px;
+    box-shadow:0 18px 45px rgba(0,0,0,.22);
+}
+
+.logo{
+    width:72px;
+    height:72px;
+    margin:0 auto 18px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#eaf3ff;
+    font-size:34px;
+}
+
+h1{
+    text-align:center;
+    color:#123;
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#6b7280;
+    line-height:1.6;
+    margin-bottom:28px;
+}
+
+label{
+    display:block;
+    color:#333;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
 input{
     width:100%;
-    padding:14px;
-    margin:12px 0;
-    border:1px solid #ccc;
-    border-radius:10px;
-    font-size:15px;
+    padding:15px;
+    border:1px solid #d5dbe3;
+    border-radius:12px;
+    outline:none;
+    font-size:16px;
+    transition:.2s;
 }
+
+input:focus{
+    border-color:#0d6efd;
+    box-shadow:0 0 0 3px rgba(13,110,253,.12);
+}
+
 button{
     width:100%;
-    padding:14px;
-    background:#28a745;
-    color:white;
+    margin-top:18px;
+    padding:15px;
     border:0;
-    border-radius:10px;
+    border-radius:12px;
+    background:#0d6efd;
+    color:white;
     font-size:16px;
+    font-weight:bold;
     cursor:pointer;
+    transition:.2s;
 }
+
+button:hover{
+    background:#0b5ed7;
+    transform:translateY(-1px);
+}
+
+.security{
+    margin-top:22px;
+    padding:14px;
+    border-radius:12px;
+    background:#f4f8ff;
+    color:#596579;
+    font-size:13px;
+    line-height:1.5;
+    text-align:center;
+}
+
 .back{
     display:block;
     text-align:center;
-    margin-top:20px;
+    margin-top:22px;
     color:#0d6efd;
     text-decoration:none;
     font-weight:bold;
 }
+
+.back:hover{
+    text-decoration:underline;
+}
+
+.footer{
+    text-align:center;
+    color:rgba(255,255,255,.9);
+    font-size:13px;
+    margin-top:18px;
+}
+
+@media(max-width:480px){
+    .card{
+        padding:30px 22px;
+        border-radius:20px;
+    }
+
+    h1{
+        font-size:25px;
+    }
+}
 </style>
 </head>
+
 <body>
+
 <div class="container">
-<h2>Forgot Password?</h2>
-<p>
-Enter the email address associated with your GoodLeaders account.
-If the account exists, you will be able to continue the password
-recovery process.
-</p>
 
-<form action="/forgot-password" method="POST">
-<input
-    type="email"
-    name="email"
-    placeholder="Email Address"
-    required>
-<button type="submit">Continue</button>
-</form>
+    <div class="card">
 
-<a class="back" href="/login">← Back to Login</a>
+        <div class="logo">🔐</div>
+
+        <h1>Forgot Password?</h1>
+
+        <p class="subtitle">
+            No worries. Enter the email address connected
+            to your GoodLeaders account and we'll help you
+            get back into your account.
+        </p>
+
+        <form action="/forgot-password" method="POST">
+
+            <label for="email">Email Address</label>
+
+            <input
+                id="email"
+                type="email"
+                name="email"
+                placeholder="Enter your email address"
+                autocomplete="email"
+                required
+            >
+
+            <button type="submit">
+                Send Reset Link
+            </button>
+
+        </form>
+
+        <div class="security">
+            🔒 Your account security is important to us.
+            Password reset links are temporary and expire
+            after 30 minutes.
+        </div>
+
+        <a class="back" href="/login">
+            ← Back to Login
+        </a>
+
+    </div>
+
+    <div class="footer">
+        © GoodLeaders — Leadership, Growth &amp; Purpose
+    </div>
+
 </div>
+
 </body>
 </html>
     `);
@@ -701,7 +828,7 @@ app.post("/forgot-password", async (req, res) => {
         }
 
         const resetUrl =
-            `${req.protocol}://${req.get("host")}/reset-password/${token}`;
+            `https://goodleaders.onrender.com/reset-password/${token}`;
 
         const { data, error } = await resend.emails.send({
             from: "GoodLeaders <onboarding@resend.dev>",
@@ -791,9 +918,66 @@ app.get("/reset-password/:token", async (req, res) => {
 
         if (result.rows.length === 0) {
             return res.status(400).send(`
-                <h2>Invalid or Expired Link</h2>
-                <p>This password reset link is no longer valid.</p>
-                <a href="/forgot-password">Request another reset</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Invalid Reset Link - GoodLeaders</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:linear-gradient(135deg,#0d6efd,#4facfe);
+}
+.card{
+    width:100%;
+    max-width:430px;
+    background:white;
+    padding:38px 32px;
+    border-radius:24px;
+    text-align:center;
+    box-shadow:0 18px 45px rgba(0,0,0,.22);
+}
+.icon{
+    font-size:50px;
+    margin-bottom:15px;
+}
+h1{
+    color:#dc3545;
+    margin-bottom:12px;
+}
+p{
+    color:#666;
+    line-height:1.6;
+}
+a{
+    display:block;
+    margin-top:24px;
+    color:#0d6efd;
+    text-decoration:none;
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="icon">⚠️</div>
+<h1>Link Expired</h1>
+<p>
+This password reset link is invalid or has expired.
+Please request a new password reset link.
+</p>
+<a href="/forgot-password">Request a New Link</a>
+<a href="/login">← Back to Login</a>
+</div>
+</body>
+</html>
             `);
         }
 
@@ -802,71 +986,203 @@ app.get("/reset-password/:token", async (req, res) => {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>Reset Password - GoodLeaders</title>
+
 <style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-body{
+*{
+    box-sizing:border-box;
     margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
     min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(135deg,#0d6efd,#4facfe);
     padding:20px;
+    background:linear-gradient(135deg,#0d6efd,#4facfe);
 }
+
 .container{
     width:100%;
-    max-width:400px;
-    background:white;
-    padding:35px;
-    border-radius:18px;
-    box-shadow:0 10px 25px rgba(0,0,0,.25);
+    max-width:430px;
 }
-h2{text-align:center;color:#0d6efd}
+
+.card{
+    background:#fff;
+    border-radius:24px;
+    padding:38px 32px;
+    box-shadow:0 18px 45px rgba(0,0,0,.22);
+}
+
+.logo{
+    width:72px;
+    height:72px;
+    margin:0 auto 18px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#eaf3ff;
+    font-size:34px;
+}
+
+h1{
+    text-align:center;
+    color:#123;
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#6b7280;
+    line-height:1.6;
+    margin-bottom:25px;
+}
+
+label{
+    display:block;
+    color:#333;
+    font-weight:bold;
+    margin:15px 0 8px;
+}
+
+.password-box{
+    position:relative;
+}
+
 input{
     width:100%;
-    padding:14px;
-    margin:10px 0;
-    border:1px solid #ccc;
-    border-radius:10px;
-    font-size:15px;
+    padding:15px;
+    border:1px solid #d5dbe3;
+    border-radius:12px;
+    outline:none;
+    font-size:16px;
 }
+
+input:focus{
+    border-color:#0d6efd;
+    box-shadow:0 0 0 3px rgba(13,110,253,.12);
+}
+
 button{
     width:100%;
-    padding:14px;
-    background:#28a745;
-    color:white;
+    margin-top:22px;
+    padding:15px;
     border:0;
-    border-radius:10px;
+    border-radius:12px;
+    background:#0d6efd;
+    color:#fff;
     font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#0b5ed7;
+}
+
+.requirements{
+    margin-top:18px;
+    padding:14px;
+    border-radius:12px;
+    background:#f4f8ff;
+    color:#596579;
+    font-size:13px;
+    line-height:1.6;
+}
+
+.footer{
+    text-align:center;
+    color:rgba(255,255,255,.9);
+    font-size:13px;
+    margin-top:18px;
+}
+
+@media(max-width:480px){
+    .card{
+        padding:30px 22px;
+        border-radius:20px;
+    }
+
+    h1{
+        font-size:25px;
+    }
 }
 </style>
 </head>
+
 <body>
+
 <div class="container">
-<h2>🔐 Create New Password</h2>
+
+<div class="card">
+
+<div class="logo">🔐</div>
+
+<h1>Create New Password</h1>
+
+<p class="subtitle">
+Choose a new password for your GoodLeaders account.
+</p>
 
 <form action="/reset-password" method="POST">
-<input type="hidden" name="token" value="${req.params.token}">
 
 <input
+    type="hidden"
+    name="token"
+    value="${req.params.token}"
+>
+
+<label for="password">New Password</label>
+
+<input
+    id="password"
     type="password"
     name="password"
-    placeholder="New Password"
+    placeholder="Enter your new password"
     minlength="6"
-    required>
+    autocomplete="new-password"
+    required
+>
+
+<label for="confirmPassword">Confirm Password</label>
 
 <input
+    id="confirmPassword"
     type="password"
     name="confirmPassword"
-    placeholder="Confirm New Password"
+    placeholder="Confirm your new password"
     minlength="6"
-    required>
+    autocomplete="new-password"
+    required
+>
 
-<button type="submit">Reset Password</button>
+<button type="submit">
+Reset Password
+</button>
+
 </form>
+
+<div class="requirements">
+🔒 Password must be at least <strong>6 characters</strong>.
+<br>
+⏱️ This reset link expires after <strong>30 minutes</strong>.
 </div>
+
+</div>
+
+<div class="footer">
+© GoodLeaders — Leadership, Growth &amp; Purpose
+</div>
+
+</div>
+
 </body>
 </html>
         `);
@@ -933,10 +1249,151 @@ app.post("/reset-password", async (req, res) => {
         );
 
         res.send(`
-            <h2>Password Reset Successful ✅</h2>
-            <p>Your password has been changed successfully.</p>
-            <p>You can now log in with your new password.</p>
-            <a href="/login">Go to Login</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Password Reset Successful - GoodLeaders</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:linear-gradient(135deg,#0d6efd,#4facfe);
+}
+
+.container{
+    width:100%;
+    max-width:430px;
+}
+
+.card{
+    background:#fff;
+    border-radius:24px;
+    padding:42px 32px;
+    text-align:center;
+    box-shadow:0 18px 45px rgba(0,0,0,.22);
+}
+
+.success-icon{
+    width:78px;
+    height:78px;
+    margin:0 auto 20px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e8f8ee;
+    color:#28a745;
+    font-size:42px;
+}
+
+h1{
+    color:#123;
+    font-size:27px;
+    margin-bottom:12px;
+}
+
+.message{
+    color:#667085;
+    line-height:1.7;
+    margin-bottom:25px;
+}
+
+.login-button{
+    display:block;
+    width:100%;
+    padding:15px;
+    border-radius:12px;
+    background:#0d6efd;
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    font-size:16px;
+}
+
+.login-button:hover{
+    background:#0b5ed7;
+}
+
+.security{
+    margin-top:20px;
+    padding:14px;
+    border-radius:12px;
+    background:#f4f8ff;
+    color:#596579;
+    font-size:13px;
+    line-height:1.5;
+}
+
+.footer{
+    text-align:center;
+    color:rgba(255,255,255,.9);
+    font-size:13px;
+    margin-top:18px;
+}
+
+@media(max-width:480px){
+    .card{
+        padding:34px 22px;
+    }
+
+    h1{
+        font-size:24px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<div class="success-icon">
+✓
+</div>
+
+<h1>Password Reset Successful!</h1>
+
+<p class="message">
+Your GoodLeaders password has been changed successfully.
+You can now sign in using your new password.
+</p>
+
+<a class="login-button" href="/login">
+Go to Login
+</a>
+
+<div class="security">
+🔒 Your new password is securely protected.
+<br>
+Welcome back to GoodLeaders!
+</div>
+
+</div>
+
+<div class="footer">
+© GoodLeaders — Leadership, Growth &amp; Purpose
+</div>
+
+</div>
+
+</body>
+</html>
         `);
 
     } catch (error) {
