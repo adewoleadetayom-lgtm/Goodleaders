@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Leadership Articles | GoodLeaders</title>
+
+<meta name="description"
+      content="Read practical GoodLeaders articles about leadership, character, communication, teamwork, responsibility, decision-making and personal development.">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#222;
+    line-height:1.7;
+}
+
+header{
+    background:linear-gradient(135deg,#0d47a1,#2563eb);
+    color:white;
+    padding:28px 20px;
+    text-align:center;
+}
+
+header h1{
+    font-size:36px;
+    margin-bottom:8px;
+}
+
+header p{
+    max-width:760px;
+    margin:auto;
+    font-size:17px;
+}
+
+nav{
+    background:white;
+    padding:14px 10px;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+nav a{
+    color:#1e40af;
+    text-decoration:none;
+    margin:0 9px;
+    font-weight:bold;
+}
+
+nav a:hover{
+    text-decoration:underline;
+}
+
+.container{
+    max-width:1100px;
+    margin:35px auto;
+    padding:0 20px;
+}
+
+.intro{
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+    margin-bottom:30px;
+}
+
+.intro h2{
+    color:#1e40af;
+    margin-bottom:10px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:22px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
+
+.card h2{
+    color:#1e40af;
+    font-size:22px;
+    margin-bottom:10px;
+}
+
+.date{
+    color:#64748b;
+    font-size:14px;
+    margin-bottom:15px;
+}
+
+.excerpt{
+    color:#4b5563;
+}
+
+.btn{
+    display:inline-block;
+    margin-top:18px;
+    padding:11px 18px;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+.btn:hover{
+    background:#1d4ed8;
+}
+
+.empty{
+    background:white;
+    padding:35px;
+    border-radius:15px;
+    text-align:center;
+    color:#64748b;
+}
+
+footer{
+    background:#102a56;
+    color:white;
+    text-align:center;
+    padding:30px 20px;
+    margin-top:50px;
+}
+
+.footer-links{
+    margin:15px 0;
+}
+
+.footer-links a{
+    color:white;
+    text-decoration:none;
+    margin:0 8px;
+}
+
+@media(max-width:600px){
+    header h1{
+        font-size:30px;
+    }
+
+    nav a{
+        display:inline-block;
+        margin:5px 7px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>📖 GoodLeaders Leadership Articles</h1>
+    <p>
+        Practical ideas and educational insights about leadership,
+        character, communication, teamwork and personal development.
+    </p>
+</header>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/articles">Articles</a>
+    <a href="/library">Library</a>
+    <a href="/announcements">Announcements</a>
+    <a href="/contact">Contact</a>
+    <a href="/login">Login</a>
+    <a href="/register">Register</a>
+</nav>
+
+<main class="container">
+
+<div class="intro">
+    <h2>Learn, Reflect and Grow</h2>
+
+    <p>
+        Leadership is a skill that can be developed through learning,
+        practice and reflection. GoodLeaders articles explore practical
+        leadership ideas that can be applied in school, work, family,
+        teams and communities.
+    </p>
+
+    <p>
+        Whether you are learning about leadership for the first time or
+        looking for ideas to improve your ability to work with others,
+        these articles are designed to provide useful perspectives and
+        practical lessons.
+    </p>
+</div>
+
+<% if (posts && posts.length > 0) { %>
+
+<div class="grid">
+
+<% posts.forEach(function(post) { %>
+
+<article class="card">
+
+<h2>
+    <%= post.title %>
+</h2>
+
+<% if (post.date) { %>
+<p class="date">
+    Published: <%= post.date %>
+</p>
+<% } %>
+
+<p class="excerpt">
+    <%= (post.content || "").substring(0, 220) %><%= (post.content || "").length > 220 ? "..." : "" %>
+</p>
+
+<a href="/article/<%= post.id %>" class="btn">
+    Read Article
+</a>
+
+</article>
+
+<% }) %>
+
+</div>
+
+<% } else { %>
+
+<div class="empty">
+
+<h2>No articles published yet</h2>
+
+<p>
+    New leadership articles will appear here as they are published.
+</p>
+
+</div>
+
+<% } %>
+
+</main>
+
+<footer>
+
+<p><strong>GoodLeaders</strong></p>
+
+<p>Empowering Tomorrow's Leaders.</p>
+
+<div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+    <a href="/privacy">Privacy Policy</a>
+    <a href="/terms">Terms &amp; Conditions</a>
+    <a href="/cookies">Cookie Policy</a>
+</div>
+
+<p>&copy; 2026 GoodLeaders. All Rights Reserved.</p>
+
+</footer>
+
+</body>
+</html>

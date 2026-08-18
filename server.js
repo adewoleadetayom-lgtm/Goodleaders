@@ -1567,8 +1567,6 @@ app.post("/delete-contact-message/:id", async (req, res) => {
 // =========================
 
 app.get("/articles", async (req, res) => {
-    if (!requireLogin(req, res)) return;
-
     try {
         const postsResult = await pool.query(
             "SELECT * FROM posts ORDER BY id DESC"
@@ -1593,8 +1591,6 @@ app.get("/articles", async (req, res) => {
 // =========================
 
 app.get("/article/:id", async (req, res) => {
-    if (!requireLogin(req, res)) return;
-
     try {
         const articleId = Number.parseInt(req.params.id, 10);
 
