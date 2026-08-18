@@ -178,9 +178,21 @@ async function getUser(email) {
     return result.rows[0] || null;
 }
 
+// Main administrators whose admin access is always recognized.
+const MAIN_ADMIN_EMAILS = [
+    "adewoleadetayom@gmail.com",
+    "arowologoodluck2@gmail.com"
+];
+
 async function isAdmin(email) {
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+
+    if (MAIN_ADMIN_EMAILS.includes(normalizedEmail)) {
+        return true;
+    }
+
     const user = await getUser(email);
-    return user && user.role === "admin";
+    return !!(user && user.role === "admin");
 }
 
 function requireLogin(req, res) {
